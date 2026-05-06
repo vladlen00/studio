@@ -618,6 +618,16 @@ html, body {
           <div class="music-track-desc">снижение кортизола, ускорение метаболизма, обновление</div>
         </div>
       </div>
+      <div class="music-track-item" id="mt4" onclick="selectTrack(4)">
+        <div class="music-track-playing paused" id="mp4">
+          <div class="bar-anim"></div><div class="bar-anim"></div><div class="bar-anim"></div>
+        </div>
+        <div class="music-track-num">5</div>
+        <div class="music-track-info">
+          <div class="music-track-name">Розовый шум - для сна</div>
+          <div class="music-track-desc">глубокий сон, тишина ума, восстановление</div>
+        </div>
+      </div>
 
       <div class="music-player" id="musicPlayer">
         <div class="music-cover">
@@ -800,6 +810,7 @@ const TRACKS = [
   { src: 'music_deep_meditation.mp3', title: 'Глубокое погружение' },
   { src: 'music_pineal_30min.mp3', title: '8 Hz — мягкое погружение | тишина ума, расслабление, спокойствие' },
   { src: 'music_528hz.mp3', title: '528 Hz — альфа-волны | снижение кортизола, ускорение метаболизма, обновление' },
+  { src: 'music_pinknoise.mp3', title: 'Розовый шум - для сна | глубокий сон, тишина ума, восстановление' },
 ];
 
 let currentTrack = 0;
