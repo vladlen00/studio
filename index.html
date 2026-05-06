@@ -810,7 +810,7 @@ const TRACKS = [
   { src: 'music_deep_meditation.mp3', title: 'Глубокое погружение' },
   { src: 'music_pineal_30min.mp3', title: '8 Hz — мягкое погружение | тишина ума, расслабление, спокойствие' },
   { src: 'music_528hz.mp3', title: '528 Hz — альфа-волны | снижение кортизола, ускорение метаболизма, обновление' },
-  { src: 'music_pinknoise.mp3', title: 'Розовый шум - для сна | глубокий сон, тишина ума, восстановление' },
+  { src: 'music_pinknoise.mp3', title: 'Розовый шум - для сна | глубокий сон, тишина ума, восстановление', loop: true },
 ];
 
 let currentTrack = 0;
@@ -854,6 +854,11 @@ musicAudio.addEventListener('loadedmetadata', () => {
 });
 
 musicAudio.addEventListener('ended', () => {
+  if (TRACKS[currentTrack] && TRACKS[currentTrack].loop) {
+    musicAudio.currentTime = 0;
+    musicAudio.play().catch(() => {});
+    return;
+  }
   musicPlaying = false;
   musicPlayBtn.textContent = '▶';
   mandala.classList.remove('spinning');
@@ -873,6 +878,7 @@ function selectTrack(idx) {
   document.getElementById('mt' + idx).classList.add('active');
   musicTitle.textContent = TRACKS[idx].title;
   musicAudio.src = TRACKS[idx].src;
+  musicAudio.loop = !!TRACKS[idx].loop;
   musicAudio.load();
   musicRange.value = 0;
   musicCurrent.textContent = '0:00';
@@ -883,6 +889,7 @@ function selectTrack(idx) {
 function toggleMusic() {
   if (!musicAudio.src || !musicAudio.src.includes('.mp3')) {
     musicAudio.src = TRACKS[currentTrack].src;
+    musicAudio.loop = !!TRACKS[currentTrack].loop;
     musicAudio.load();
   }
   if (!musicPlaying) {
