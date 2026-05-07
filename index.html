@@ -1155,5 +1155,66 @@ function init() {
 
 irenaCheckAccess().then(ok => { if (ok) init(); });
 </script>
+
+<style>
+#hs-btn {
+  position: fixed;
+  bottom: 16px; right: 16px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(30,20,60,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(160,120,255,0.25);
+  color: rgba(220,210,255,0.95);
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+  transition: transform 0.15s, background 0.2s;
+  padding: 0;
+}
+#hs-btn:active {
+  transform: scale(0.92);
+  background: rgba(50,30,100,0.8);
+}
+</style>
+
+<button id="hs-btn" aria-label="Добавить на главный экран">📲</button>
+
+<script>
+(function() {
+  const btn = document.getElementById('hs-btn');
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (!btn || !tg) return;
+
+  function applyStatus(status) {
+    if (status === 'added' || status === 'unsupported') {
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = 'flex';
+    }
+  }
+
+  if (typeof tg.checkHomeScreenStatus === 'function') {
+    try { tg.checkHomeScreenStatus(applyStatus); } catch(e) {}
+  }
+
+  if (typeof tg.onEvent === 'function') {
+    tg.onEvent('homeScreenAdded', () => { btn.style.display = 'none'; });
+  }
+
+  btn.addEventListener('click', () => {
+    if (typeof tg.addToHomeScreen === 'function') {
+      try { tg.addToHomeScreen(); return; } catch(e) {}
+    }
+    alert('Открой меню Telegram (три точки сверху) и выбери "Добавить на главный экран"');
+  });
+})();
+</script>
 </body>
 </html>
