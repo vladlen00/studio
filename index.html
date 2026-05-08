@@ -699,7 +699,7 @@ html, body {
         </div>
         <div class="music-track-num">3</div>
         <div class="music-track-info">
-          <div class="music-track-name">8 Hz — мягкое погружение</div>
+          <div class="music-track-name">8 Hz - мягкое погружение</div>
           <div class="music-track-desc">тишина ума, расслабление, спокойствие</div>
         </div>
       </div>
@@ -709,7 +709,7 @@ html, body {
         </div>
         <div class="music-track-num">4</div>
         <div class="music-track-info">
-          <div class="music-track-name">528 Hz — альфа-волны</div>
+          <div class="music-track-name">528 Hz - альфа-волны</div>
           <div class="music-track-desc">снижение кортизола, ускорение метаболизма, обновление</div>
         </div>
       </div>
@@ -719,8 +719,18 @@ html, body {
         </div>
         <div class="music-track-num">5</div>
         <div class="music-track-info">
-          <div class="music-track-name">Розовый шум - для сна</div>
-          <div class="music-track-desc">глубокий сон, тишина ума, восстановление</div>
+          <div class="music-track-name">Коричневый шум - для сна</div>
+          <div class="music-track-desc">глубокое расслабление, маскирует тревожные мысли</div>
+        </div>
+      </div>
+      <div class="music-track-item" id="mt5" onclick="selectTrack(5)">
+        <div class="music-track-playing paused" id="mp5">
+          <div class="bar-anim"></div><div class="bar-anim"></div><div class="bar-anim"></div>
+        </div>
+        <div class="music-track-num">6</div>
+        <div class="music-track-info">
+          <div class="music-track-name">Розовый шум - для концентрации</div>
+          <div class="music-track-desc">помогает фокусироваться при работе</div>
         </div>
       </div>
 
@@ -903,9 +913,10 @@ async function irenaCheckAccess() {
 const TRACKS = [
   { src: 'music_shavasana.mp3', title: 'Музыка для медитации' },
   { src: 'music_deep_meditation.mp3', title: 'Глубокое погружение' },
-  { src: 'music_pineal_30min.mp3', title: '8 Hz — мягкое погружение | тишина ума, расслабление, спокойствие' },
-  { src: 'music_528hz.mp3', title: '528 Hz — альфа-волны | снижение кортизола, ускорение метаболизма, обновление' },
-  { src: 'music_pinknoise.mp3', title: 'Розовый шум - для сна | глубокий сон, тишина ума, восстановление', loop: true },
+  { src: 'music_pineal_30min.mp3', title: '8 Hz - мягкое погружение | тишина ума, расслабление, спокойствие' },
+  { src: 'music_528hz.mp3', title: '528 Hz - альфа-волны | снижение кортизола, ускорение метаболизма, обновление' },
+  { src: 'music_brown_noise.mp3', title: 'Коричневый шум - для сна | глубокое расслабление, маскирует тревожные мысли', loop: true },
+  { src: 'music_pinknoise.mp3', title: 'Розовый шум - для концентрации | помогает фокусироваться при работе', loop: true },
 ];
 
 let currentTrack = 0;
