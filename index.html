@@ -40,16 +40,6 @@ html, body {
   color: rgba(220,210,255,0.9);
   text-shadow: 0 0 30px rgba(120,80,220,0.4);
 }
-.header-sub {
-  font-size: 0.7rem; letter-spacing: 0.25em;
-  color: rgba(160,140,210,0.5);
-  margin-top: 2px; text-transform: uppercase;
-  display: flex; align-items: center; gap: 6px;
-}
-.ig-icon {
-  width: 13px; height: 13px; flex-shrink: 0;
-  opacity: 0.5;
-}
 .tabs {
   display: flex; gap: 6px;
   padding: 16px 24px 0;
@@ -126,40 +116,23 @@ html, body {
 }
 .track-play {
   width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(100,60,220,0.25);
-  border: 1px solid rgba(120,80,220,0.4);
+  background: linear-gradient(135deg, #9060e0, #6040d0);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(96,64,208,0.4);
 }
 .track-item:active .track-play {
-  background: rgba(100,60,220,0.5);
+  transform: scale(0.95);
 }
-.play-icon { font-size: 0.8rem; margin-left: 2px; }
 
 /* Music player */
 .music-player {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
-  padding: 20px;
+  padding: 18px 18px 16px;
   margin-bottom: 16px;
 }
-.music-cover {
-  width: 100%; aspect-ratio: 1;
-  border-radius: 16px;
-  background: radial-gradient(circle at 40% 40%, rgba(80,40,160,0.6), rgba(20,10,60,0.9));
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 16px;
-  position: relative; overflow: hidden;
-}
-.music-cover-mandala {
-  width: 80%; height: 80%;
-  opacity: 0.4;
-}
-.music-cover-mandala.spinning {
-  animation: spin 20s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 
 /* Track list */
 .track-list {
@@ -252,22 +225,31 @@ html, body {
   display: flex; align-items: center; justify-content: center; gap: 20px;
 }
 .music-btn {
-  background: none; border: none; cursor: pointer;
-  color: rgba(180,160,230,0.6);
-  font-size: 1.1rem; padding: 8px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid #c084fc;
+  color: #c084fc;
+  box-shadow: 0 0 12px rgba(192,132,252,0.25);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
   transition: all 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
-.music-btn:active { color: rgba(220,200,255,1); }
+.music-btn:active {
+  background: rgba(192,132,252,0.15);
+  color: #d8b4fe;
+}
 .music-play-btn {
   width: 52px; height: 52px; border-radius: 50%;
   background: linear-gradient(135deg, #6040d0, #9060e0);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem; color: #fff;
   box-shadow: 0 0 25px rgba(100,60,220,0.4);
   transition: all 0.2s;
   -webkit-tap-highlight-color: transparent;
+  padding: 0;
 }
 .music-play-btn:active { transform: scale(0.95); }
 
@@ -485,64 +467,53 @@ html, body {
   padding: 16px 24px 4px;
   flex-shrink: 0;
 }
-.tools-label {
-  font-size: 0.62rem; letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(150,130,200,0.45);
-  margin-bottom: 10px;
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
-.tool-card {
+.tool-mini {
   position: relative; overflow: hidden;
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px;
+  display: flex; flex-direction: row;
+  align-items: center; gap: 10px;
+  padding: 11px 10px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px;
-  margin-bottom: 10px;
+  border-radius: 14px;
   cursor: pointer;
   transition: all 0.25s;
   -webkit-tap-highlight-color: transparent;
 }
-.tool-card::before {
+.tool-mini::before {
   content: '';
   position: absolute; inset: 0;
   background: radial-gradient(circle at 100% 0%, var(--tool-accent), transparent 60%);
   opacity: 0.22;
   pointer-events: none;
 }
-.tool-card:hover, .tool-card:active {
+.tool-mini:hover, .tool-mini:active {
   background: rgba(100,60,220,0.12);
   border-color: rgba(120,80,220,0.3);
 }
-.tool-card.tool-green   { --tool-accent: rgba(74,222,128,0.6); }
-.tool-card.tool-orange  { --tool-accent: rgba(251,146,60,0.6); }
-.tool-card.tool-purple  { --tool-accent: rgba(192,132,252,0.6); }
-.tool-card.tool-pink    { --tool-accent: rgba(232,165,160,0.6); }
-.tool-icon {
+.tool-mini.tool-green   { --tool-accent: rgba(74,222,128,0.6); }
+.tool-mini.tool-orange  { --tool-accent: rgba(251,146,60,0.6); }
+.tool-mini.tool-purple  { --tool-accent: rgba(192,132,252,0.6); }
+.tool-mini.tool-pink    { --tool-accent: rgba(232,165,160,0.6); }
+.tool-mini-icon {
   position: relative; z-index: 1;
-  width: 44px; height: 44px; border-radius: 12px;
+  width: 32px; height: 32px; border-radius: 9px;
   background: color-mix(in srgb, var(--tool-accent) 25%, transparent);
   border: 1px solid color-mix(in srgb, var(--tool-accent) 50%, transparent);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem; flex-shrink: 0;
+  font-size: 1rem; flex-shrink: 0;
 }
-.tool-info { position: relative; z-index: 1; flex: 1; min-width: 0; }
-.tool-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 400; font-size: 1rem;
-  color: rgba(220,210,255,0.9);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.tool-desc {
-  font-size: 0.68rem; letter-spacing: 0.08em;
-  color: rgba(150,130,200,0.55);
-  margin-top: 2px;
-}
-.tool-arrow {
+.tool-mini-name {
   position: relative; z-index: 1;
-  font-size: 1.6rem; line-height: 1;
-  color: rgba(180,160,230,0.5);
-  flex-shrink: 0; padding-left: 4px;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 11.5px; line-height: 1.25;
+  color: rgba(220,210,255,0.9);
+  flex: 1; min-width: 0;
 }
 </style>
 </head>
@@ -554,53 +525,26 @@ html, body {
 <div class="app">
   <div class="header">
     <div class="header-title">Студия практик от Ирены</div>
-    <div class="header-sub">
-      <svg class="ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-        <circle cx="12" cy="12" r="4"/>
-        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-      </svg>
-      irena.bio
-    </div>
   </div>
 
   <div class="tools-section">
-    <div class="tools-label">Инструменты</div>
-
-    <div class="tool-card tool-green" onclick="openApp('https://t.me/relax2000_bot/tracker')">
-      <div class="tool-icon">⚡</div>
-      <div class="tool-info">
-        <div class="tool-name">Дневник самочувствия</div>
-        <div class="tool-desc">чек-ин, статистика, AI коуч</div>
+    <div class="tools-grid">
+      <div class="tool-mini tool-green" onclick="openApp('https://t.me/relax2000_bot/tracker')">
+        <div class="tool-mini-icon">⚡</div>
+        <div class="tool-mini-name">Дневник<br>самочувствия</div>
       </div>
-      <div class="tool-arrow">›</div>
-    </div>
-
-    <div class="tool-card tool-orange" onclick="openApp('https://t.me/relax2000_bot/workout')">
-      <div class="tool-icon">✨</div>
-      <div class="tool-info">
-        <div class="tool-name">Тренировки «Женское Тело»</div>
-        <div class="tool-desc">комплекс упражнений на каждый день</div>
+      <div class="tool-mini tool-orange" onclick="openApp('https://t.me/relax2000_bot/workout')">
+        <div class="tool-mini-icon">✨</div>
+        <div class="tool-mini-name">Тренировки<br>«Женское Тело»</div>
       </div>
-      <div class="tool-arrow">›</div>
-    </div>
-
-    <div class="tool-card tool-purple" onclick="openApp('https://t.me/relax2000_bot/tracker?startapp=ai')">
-      <div class="tool-icon">💜</div>
-      <div class="tool-info">
-        <div class="tool-name">Твоя ИИ подружка</div>
-        <div class="tool-desc">биохак коуч который всё знает</div>
+      <div class="tool-mini tool-purple" onclick="openApp('https://t.me/relax2000_bot/tracker?startapp=ai')">
+        <div class="tool-mini-icon">💜</div>
+        <div class="tool-mini-name">ИИ подружка</div>
       </div>
-      <div class="tool-arrow">›</div>
-    </div>
-
-    <div class="tool-card tool-pink" onclick="openApp('https://t.me/relax2000_bot/cycle')">
-      <div class="tool-icon">🌸</div>
-      <div class="tool-info">
-        <div class="tool-name">Цикл</div>
-        <div class="tool-desc">календарь месячных и овуляции</div>
+      <div class="tool-mini tool-pink" onclick="openApp('https://t.me/relax2000_bot/cycle')">
+        <div class="tool-mini-icon">🌸</div>
+        <div class="tool-mini-name">Цикл</div>
       </div>
-      <div class="tool-arrow">›</div>
     </div>
   </div>
 
@@ -622,7 +566,7 @@ html, body {
           <div class="track-name">Глубокое расслабление</div>
           <div class="track-desc">Дневная · 15 мин</div>
         </div>
-        <div class="track-play"><span class="play-icon">▶</span></div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
       <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/sleep')">
         <div class="track-icon">🌙</div>
@@ -630,7 +574,7 @@ html, body {
           <div class="track-name">Глубокий сон</div>
           <div class="track-desc">Ночная · 15 мин</div>
         </div>
-        <div class="track-play"><span class="play-icon">▶</span></div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
       <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/anxiety')">
         <div class="track-icon">🌸</div>
@@ -638,7 +582,7 @@ html, body {
           <div class="track-name">Внутреннее спокойствие</div>
           <div class="track-desc">От тревожности · 19 мин</div>
         </div>
-        <div class="track-play"><span class="play-icon">▶</span></div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
       <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/slim')">
         <div class="track-icon">🌿</div>
@@ -646,7 +590,7 @@ html, body {
           <div class="track-name">Медитация стройности</div>
           <div class="track-desc">Тело · 17 мин</div>
         </div>
-        <div class="track-play"><span class="play-icon">▶</span></div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
       <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/oneday')">
         <div class="track-icon">☀️</div>
@@ -654,7 +598,7 @@ html, body {
           <div class="track-name">Медитация «Один день»</div>
           <div class="track-desc">Дневная · 25 мин</div>
         </div>
-        <div class="track-play"><span class="play-icon">▶</span></div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
     </div>
 
@@ -667,7 +611,7 @@ html, body {
           <div class="track-name">Дыхание 4 · 4 · 6</div>
           <div class="track-desc">Для дня и фокуса · снижает кортизол</div>
         </div>
-        <div class="track-play"><span class="play-icon">▶</span></div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
       <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/breathing')">
         <div class="track-icon">🌬</div>
@@ -675,7 +619,7 @@ html, body {
           <div class="track-name">Дыхание 4 · 7 · 8</div>
           <div class="track-desc">Перед сном или при тревоге</div>
         </div>
-        <div class="track-play"><span class="play-icon">▶</span></div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
     </div>
 
@@ -745,27 +689,6 @@ html, body {
       </div>
 
       <div class="music-player" id="musicPlayer">
-        <div class="music-cover">
-          <svg class="music-cover-mandala" id="mandala" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="90" stroke="rgba(160,120,255,0.4)" stroke-width="0.5"/>
-            <circle cx="100" cy="100" r="70" stroke="rgba(140,100,240,0.3)" stroke-width="0.5"/>
-            <circle cx="100" cy="100" r="50" stroke="rgba(120,80,220,0.3)" stroke-width="0.5"/>
-            <circle cx="100" cy="100" r="30" stroke="rgba(100,60,200,0.4)" stroke-width="0.5"/>
-            <g stroke="rgba(160,120,255,0.25)" stroke-width="0.5">
-              <line x1="100" y1="10" x2="100" y2="190"/>
-              <line x1="10" y1="100" x2="190" y2="100"/>
-              <line x1="29" y1="29" x2="171" y2="171"/>
-              <line x1="171" y1="29" x2="29" y2="171"/>
-              <line x1="10" y1="63" x2="190" y2="137"/>
-              <line x1="10" y1="137" x2="190" y2="63"/>
-              <line x1="63" y1="10" x2="137" y2="190"/>
-              <line x1="137" y1="10" x2="63" y2="190"/>
-            </g>
-            <circle cx="100" cy="100" r="8" fill="rgba(160,120,255,0.5)"/>
-            <circle cx="100" cy="100" r="4" fill="rgba(200,180,255,0.8)"/>
-          </svg>
-        </div>
-
         <div class="music-now-playing" id="musicTitle">Музыка для медитации</div>
         <div class="music-artist">irena.bio · без голоса</div>
 
@@ -778,9 +701,23 @@ html, body {
         </div>
 
         <div class="music-controls">
-          <button class="music-btn" onclick="musicSkip(-15)">⏪</button>
-          <button class="music-play-btn" id="musicPlayBtn" onclick="toggleMusic()">▶</button>
-          <button class="music-btn" onclick="musicSkip(15)">⏩</button>
+          <button class="music-btn" onclick="musicSkip(-15)" aria-label="Назад 15 секунд">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+              <path d="M3 12a9 9 0 1 0 9-9"/>
+              <polyline points="3 5 3 12 10 12"/>
+              <text x="12" y="16" text-anchor="middle" font-size="6" font-weight="600" fill="currentColor" stroke="none">15</text>
+            </svg>
+          </button>
+          <button class="music-play-btn" id="musicPlayBtn" onclick="toggleMusic()" aria-label="Воспроизвести">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff" style="margin-left:2px"><polygon points="7,5 7,19 20,12"/></svg>
+          </button>
+          <button class="music-btn" onclick="musicSkip(15)" aria-label="Вперёд 15 секунд">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+              <path d="M21 12a9 9 0 1 1-9-9"/>
+              <polyline points="21 5 21 12 14 12"/>
+              <text x="12" y="16" text-anchor="middle" font-size="6" font-weight="600" fill="currentColor" stroke="none">15</text>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -939,8 +876,10 @@ const musicRange = document.getElementById('musicRange');
 const musicCurrent = document.getElementById('musicCurrent');
 const musicDuration = document.getElementById('musicDuration');
 const musicPlayBtn = document.getElementById('musicPlayBtn');
-const mandala = document.getElementById('mandala');
 const musicTitle = document.getElementById('musicTitle');
+
+const PLAY_SVG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="#fff" style="margin-left:2px"><polygon points="7,5 7,19 20,12"/></svg>';
+const PAUSE_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
 
 function fmt(s) {
   s = Math.max(0, Math.floor(s));
@@ -976,8 +915,7 @@ musicAudio.addEventListener('ended', () => {
     return;
   }
   musicPlaying = false;
-  musicPlayBtn.textContent = '▶';
-  mandala.classList.remove('spinning');
+  musicPlayBtn.innerHTML = PLAY_SVG;
   setBarsPaused(true);
 });
 
@@ -1011,15 +949,13 @@ function toggleMusic() {
   if (!musicPlaying) {
     musicAudio.play().catch(() => {});
     musicPlaying = true;
-    musicPlayBtn.textContent = '⏸';
-    mandala.classList.add('spinning');
+    musicPlayBtn.innerHTML = PAUSE_SVG;
     setBarsPaused(false);
     musicRaf = requestAnimationFrame(updateMusicBar);
   } else {
     musicAudio.pause();
     musicPlaying = false;
-    musicPlayBtn.textContent = '▶';
-    mandala.classList.remove('spinning');
+    musicPlayBtn.innerHTML = PLAY_SVG;
     setBarsPaused(true);
     cancelAnimationFrame(musicRaf);
   }
