@@ -1177,9 +1177,13 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
   function applyStatus(status) {
     if (status === 'added' || status === 'unsupported') {
       btn.style.display = 'none';
-    } else {
-      btn.style.display = 'flex';
+      return;
     }
+    if (tg.isVersionAtLeast && !tg.isVersionAtLeast('8.0')) {
+      btn.style.display = 'none';
+      return;
+    }
+    btn.style.display = 'flex';
   }
 
   if (typeof tg.checkHomeScreenStatus === 'function') {
@@ -1191,10 +1195,19 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
   }
 
   btn.addEventListener('click', () => {
-    if (typeof tg.addToHomeScreen === 'function') {
-      try { tg.addToHomeScreen(); return; } catch(e) {}
+    if (tg.isVersionAtLeast && tg.isVersionAtLeast('8.0') && typeof tg.addToHomeScreen === 'function') {
+      try {
+        tg.addToHomeScreen();
+        return;
+      } catch(e) {
+        console.error('addToHomeScreen failed:', e);
+      }
     }
-    alert('Открой меню Telegram (три точки сверху) и выбери "Добавить на главный экран"');
+    if (tg.showAlert) {
+      tg.showAlert('Чтобы добавить приложение на рабочий стол - обнови Telegram до последней версии. После обновления вернись и нажми эту кнопку снова.');
+    } else {
+      alert('Обнови Telegram до последней версии и попробуй снова');
+    }
   });
 })();
 </script>
