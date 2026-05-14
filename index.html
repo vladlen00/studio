@@ -1164,26 +1164,151 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
   transform: scale(0.92);
   background: rgba(50,30,100,0.8);
 }
+#hs-help-btn {
+  position: fixed;
+  bottom: 16px; right: 68px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(30,20,60,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(160,120,255,0.25);
+  color: rgba(220,210,255,0.95);
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+  transition: transform 0.15s, background 0.2s;
+  padding: 0;
+}
+#hs-help-btn:active {
+  transform: scale(0.92);
+  background: rgba(50,30,100,0.8);
+}
+#hs-help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#hs-help-modal.open { display: flex; }
+#hs-help-modal .backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+#hs-help-modal .card {
+  position: relative;
+  background: rgba(20,12,40,0.95);
+  border: 1px solid rgba(120,80,220,0.3);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 360px;
+  width: calc(100% - 32px);
+  max-height: calc(100vh - 64px);
+  overflow: auto;
+  color: rgba(230,225,250,0.95);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+#hs-help-modal .card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin: 0 28px 4px 0;
+  color: rgba(240,230,255,1);
+}
+#hs-help-modal .card .section { margin-top: 18px; }
+#hs-help-modal .card .section-title {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: rgba(230,220,255,1);
+}
+#hs-help-modal .card p {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 6px 0;
+}
+#hs-help-modal .card a {
+  color: #b59cff;
+  text-decoration: none;
+  font-weight: 600;
+}
+#hs-help-modal .card .footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(160,120,255,0.15);
+  font-size: 0.78rem;
+  opacity: 0.75;
+}
+#hs-help-modal .card .close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: rgba(220,210,255,0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  line-height: 1;
+}
 </style>
 
 <button id="hs-btn" aria-label="Добавить на главный экран">📲</button>
+<button id="hs-help-btn" aria-label="Помощь">?</button>
+
+<div id="hs-help-modal" aria-hidden="true">
+  <div class="backdrop"></div>
+  <div class="card">
+    <button class="close" aria-label="Закрыть">×</button>
+    <h2>Не получается добавить на главный экран?</h2>
+    <div class="section">
+      <div class="section-title">📱 iPhone</div>
+      <p>Подробная инструкция от Ирены со скринами:</p>
+      <p><a href="https://t.me/c/3838914998/255" data-tglink>Открыть инструкцию</a></p>
+    </div>
+    <div class="section">
+      <div class="section-title">🤖 Android (Xiaomi, Redmi, Honor)</div>
+      <p>Если тапаешь 📲 и ничего не происходит - твой телефон блокирует создание ярлыков. Открой Настройки → Telegram → Разрешения → Другие разрешения → включи "Создание ярлыков на рабочем столе". Потом вернись и тапни 📲 снова.</p>
+    </div>
+    <p class="footer">Не помогло? Напиши в саппорт <a href="https://t.me/biohack_support" data-tglink>@biohack_support</a></p>
+  </div>
+</div>
 
 <script>
 (function() {
   const btn = document.getElementById('hs-btn');
+  const helpBtn = document.getElementById('hs-help-btn');
   const tg = window.Telegram && window.Telegram.WebApp;
   if (!btn || !tg) return;
 
   function applyStatus(status) {
     if (status === 'added' || status === 'unsupported') {
       btn.style.display = 'none';
+      if (helpBtn) helpBtn.style.display = 'none';
       return;
     }
     if (tg.isVersionAtLeast && !tg.isVersionAtLeast('8.0')) {
       btn.style.display = 'none';
+      if (helpBtn) helpBtn.style.display = 'none';
       return;
     }
     btn.style.display = 'flex';
+    if (helpBtn) helpBtn.style.display = 'flex';
   }
 
   if (typeof tg.checkHomeScreenStatus === 'function') {
@@ -1191,7 +1316,10 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
   }
 
   if (typeof tg.onEvent === 'function') {
-    tg.onEvent('homeScreenAdded', () => { btn.style.display = 'none'; });
+    tg.onEvent('homeScreenAdded', () => {
+      btn.style.display = 'none';
+      if (helpBtn) helpBtn.style.display = 'none';
+    });
   }
 
   btn.addEventListener('click', () => {
@@ -1208,6 +1336,45 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
     } else {
       alert('Обнови Telegram до последней версии и попробуй снова');
     }
+  });
+})();
+</script>
+
+<script>
+(function() {
+  const helpBtn = document.getElementById('hs-help-btn');
+  const modal = document.getElementById('hs-help-modal');
+  if (!helpBtn || !modal) return;
+
+  const backdrop = modal.querySelector('.backdrop');
+  const closeBtn = modal.querySelector('.close');
+  const links = modal.querySelectorAll('a[data-tglink]');
+  const tg = window.Telegram && window.Telegram.WebApp;
+
+  function openModal() {
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  helpBtn.addEventListener('click', openModal);
+  backdrop.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closeModal);
+
+  links.forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const url = a.getAttribute('href');
+      if (tg && typeof tg.openTelegramLink === 'function') {
+        try { tg.openTelegramLink(url); } catch(_) { window.open(url, '_blank'); }
+      } else {
+        window.open(url, '_blank');
+      }
+      closeModal();
+    });
   });
 })();
 </script>
