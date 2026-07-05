@@ -541,6 +541,13 @@ html, body {
   flex: 1; min-width: 0;
   letter-spacing: 0.01em;
 }
+/* Веб-контекст (открыто с app.irenabio.com): возврат, скрыть дубль-tools, медитации "скоро" */
+.app-back { display: none; }
+body.is-web .app-back { display: inline-flex; align-items: center; gap: 6px; margin: 12px 16px 0; padding: 8px 14px; background: rgba(160,120,255,0.15); border: 1px solid rgba(160,120,255,0.35); border-radius: 12px; color: #e0d8f0; font-size: 13px; font-weight: 600; text-decoration: none; }
+body.is-web .tools-section { display: none; }
+body.is-web #panel-meditations .track-item { opacity: .5; pointer-events: none; }
+body.is-web #panel-meditations .track-item .track-play { display: none; }
+body.is-web #panel-meditations .track-item::after { content: "скоро"; align-self: center; font-size: 11px; font-weight: 700; color: #cbb8f0; background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 999px; }
 </style>
 </head>
 <body>
@@ -549,6 +556,7 @@ html, body {
 <audio id="musicAudio" preload="none"></audio>
 
 <div class="app">
+  <a id="appBackBtn" href="https://app.irenabio.com" class="app-back">← В приложение</a>
   <div class="header">
     <div class="header-title">Студия практик от Ирены</div>
   </div>
@@ -938,7 +946,27 @@ async function irenaRequestVerify(initData) {
   return { networkError: true };
 }
 
+// ДВЕРЬ 2: веб-токен из #irena_token (только веб; в ТГ initData есть -> сюда токен не кладём -> no-op).
+function irenaConsumeWebToken() {
+  try {
+    var raw = location.hash || "";
+    if (raw.charAt(0) === "#") raw = raw.slice(1);
+    if (!raw) return false;
+    var params = new URLSearchParams(raw);
+    var token = params.get("irena_token");
+    if (!token) return false;
+    var ttl = parseInt(params.get("exp") || "0", 10);
+    if (!ttl || ttl <= 0) ttl = 900;
+    irenaStoreToken(token, ttl);
+    params.delete("irena_token"); params.delete("exp");
+    var rest = params.toString();
+    history.replaceState(null, "", location.pathname + location.search + (rest ? "#" + rest : ""));
+    return true;
+  } catch { return false; }
+}
+function irenaIsWeb() { return !irenaGetInitData(); }
 async function irenaCheckAccess() {
+  irenaConsumeWebToken();   // ДВЕРЬ 2 (в ТГ no-op, initData-путь ниже не тронут -> 870 целы)
   const cached = irenaGetStoredToken();
   if (cached) return true;
   const initData = irenaGetInitData();
@@ -1085,12 +1113,29 @@ function switchTab(tab) {
   if (tab === 'silence') initPickerIfNeeded();
 }
 
+// Развязанные суб-аппы расслабления (веб). П1 = только дыхание; П2/П3 допишут медитации сюда.
+const RELAX_WEB_APPS = {
+  breathing446: { url: "https://vladlen00.github.io/breathing446/", v: "1" },
+  breathing:    { url: "https://vladlen00.github.io/breathing/",    v: "1" },
+};
+// Веб-цель по t.me-URL: форвардим свой irena_token дальше (у studio нет сессии -> mint не зовём).
+function relaxWebTarget(tmeUrl) {
+  var m = /relax2000_bot\/([a-z0-9_]+)/i.exec(tmeUrl || "");
+  var app = m && RELAX_WEB_APPS[m[1]];
+  if (!app) return null;
+  var tok = localStorage.getItem(IRENA_TOKEN_KEY) || "";
+  var expAt = parseInt(localStorage.getItem(IRENA_TOKEN_EXPIRES_KEY) || "0", 10);
+  var remain = Math.max(1, Math.round((expAt - Date.now()) / 1000));
+  var frag = tok ? ("#irena_token=" + encodeURIComponent(tok) + "&exp=" + encodeURIComponent(remain)) : "";
+  return app.url + "?v=" + encodeURIComponent(app.v) + frag;
+}
 function openApp(url) {
-  if (window.Telegram?.WebApp?.openTelegramLink) {
-    window.Telegram.WebApp.openTelegramLink(url);
-  } else {
-    window.open(url, '_blank');
-  }
+  // ТГ (есть initData) -> нативно открыть мини-апп в телеграме (870 не тронуты).
+  if (!irenaIsWeb()) { window.Telegram.WebApp.openTelegramLink(url); return; }
+  // ВЕБ (нет initData): t.me недоступен. Развязанный суб-апп -> веб-редирект с форвардом токена;
+  // иначе no-op (медитации помечены "скоро" и некликабельны, tools скрыты).
+  var web = relaxWebTarget(url);
+  if (web) location.href = web;
 }
 
 // Picker
@@ -1212,6 +1257,7 @@ function init() {
   document.querySelector('.app').classList.add('ready');
 }
 
+if (irenaIsWeb()) document.body.classList.add("is-web");
 irenaCheckAccess().then(ok => { if (ok) init(); });
 </script>
 
