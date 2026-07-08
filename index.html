@@ -663,6 +663,14 @@ html.is-web .content { flex: none; overflow: visible; }
         </div>
         <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
+      <div class="track-item" data-visible-from="2026-07-10T04:00:00Z" onclick="openApp('https://t.me/relax2000_bot/burning')">
+        <div class="track-icon">🔥</div>
+        <div class="track-info">
+          <div class="track-name">Горит внутри</div>
+          <div class="track-desc">Активная · 16 мин</div>
+        </div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
+      </div>
     </div>
 
     <!-- ДЫХАНИЕ -->
@@ -1208,6 +1216,7 @@ const RELAX_WEB_APPS = {
   kids:         { url: "https://vladlen00.github.io/kids-meditation/",    v: "2" },
   ideal:        { url: "https://vladlen00.github.io/ideal-reality/",      v: "2" },
   slim:         { url: "https://vladlen00.github.io/slim-meditation/",    v: "2" },
+  burning:      { url: "https://vladlen00.github.io/burning-meditation/", v: "1" },
 };
 // Веб-цель по t.me-URL: форвардим свой irena_token дальше (у studio нет сессии -> mint не зовём).
 function relaxWebTarget(tmeUrl) {
@@ -1347,6 +1356,20 @@ function playBell() {
 function init() {
   document.querySelector('.app').classList.add('ready');
 }
+
+// Универсальный дата-гейт плиток: скрывает любую .track-item[data-visible-from],
+// чья дата ещё не наступила - в ОБОИХ мирах (веб и телеграм). Плитки без атрибута
+// видны всегда (существующие 7 не затронуты). Проверка до даты: открыть студию с ?preview=1.
+(function applyVisibilityGate() {
+  try {
+    if (new URLSearchParams(location.search).get("preview") === "1") return;
+    var now = Date.now();
+    document.querySelectorAll(".track-item[data-visible-from]").forEach(function (el) {
+      var ts = new Date(el.getAttribute("data-visible-from")).getTime();
+      if (isFinite(ts) && now < ts) el.style.display = "none";
+    });
+  } catch (e) {}
+})();
 
 if (irenaIsWeb()) { document.documentElement.classList.add("is-web"); document.body.classList.add("is-web"); }
 irenaCheckAccess().then(ok => { if (ok) init(); });
