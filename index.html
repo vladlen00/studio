@@ -1583,6 +1583,13 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
   const modal = document.getElementById('hs-help-modal');
   if (!helpBtn || !modal) return;
 
+  // Веб-гейт (НАМЕРЕННО): help-модал ведёт на t.me-контент (инструкция + саппорт) - на
+  // вебе это тупик. Скрываем help-кнопку ЯВНО по отсутствию initData, а не полагаясь на
+  // побочный display:none от TG-колбэка checkHomeScreenStatus (на вебе он не срабатывает).
+  // Модал не навешиваем. В Телеграме (initData есть) поведение прежнее.
+  const tgInit = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData;
+  if (!tgInit) { helpBtn.style.display = 'none'; return; }
+
   const backdrop = modal.querySelector('.backdrop');
   const closeBtn = modal.querySelector('.close');
   const links = modal.querySelectorAll('a[data-tglink]');
