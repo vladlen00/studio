@@ -704,8 +704,8 @@ html.is-web .content { flex: none; overflow: visible; }
         </div>
         <div class="music-track-num">1</div>
         <div class="music-track-info">
-          <div class="music-track-name">Музыка для медитации</div>
-          <div class="music-track-desc">Шавасана</div>
+          <div class="music-track-name">Гимн канала - Женский Биохакинг</div>
+          <div class="music-track-desc">наш клубный трек</div>
         </div>
       </div>
       <div class="music-track-item" id="mt1" onclick="selectTrack(1)">
@@ -714,8 +714,8 @@ html.is-web .content { flex: none; overflow: visible; }
         </div>
         <div class="music-track-num">2</div>
         <div class="music-track-info">
-          <div class="music-track-name">Глубокое погружение</div>
-          <div class="music-track-desc">30 мин</div>
+          <div class="music-track-name">Музыка для медитации</div>
+          <div class="music-track-desc">Шавасана</div>
         </div>
       </div>
       <div class="music-track-item" id="mt2" onclick="selectTrack(2)">
@@ -724,8 +724,8 @@ html.is-web .content { flex: none; overflow: visible; }
         </div>
         <div class="music-track-num">3</div>
         <div class="music-track-info">
-          <div class="music-track-name">8 Hz - мягкое погружение</div>
-          <div class="music-track-desc">тишина ума, расслабление, спокойствие</div>
+          <div class="music-track-name">Глубокое погружение</div>
+          <div class="music-track-desc">30 мин</div>
         </div>
       </div>
       <div class="music-track-item" id="mt3" onclick="selectTrack(3)">
@@ -734,8 +734,8 @@ html.is-web .content { flex: none; overflow: visible; }
         </div>
         <div class="music-track-num">4</div>
         <div class="music-track-info">
-          <div class="music-track-name">528 Hz - альфа-волны</div>
-          <div class="music-track-desc">снижение кортизола, ускорение метаболизма, обновление</div>
+          <div class="music-track-name">8 Hz - мягкое погружение</div>
+          <div class="music-track-desc">тишина ума, расслабление, спокойствие</div>
         </div>
       </div>
       <div class="music-track-item" id="mt4" onclick="selectTrack(4)">
@@ -744,8 +744,8 @@ html.is-web .content { flex: none; overflow: visible; }
         </div>
         <div class="music-track-num">5</div>
         <div class="music-track-info">
-          <div class="music-track-name">Коричневый шум - для сна</div>
-          <div class="music-track-desc">глубокое расслабление, маскирует тревожные мысли</div>
+          <div class="music-track-name">528 Hz - альфа-волны</div>
+          <div class="music-track-desc">снижение кортизола, ускорение метаболизма, обновление</div>
         </div>
       </div>
       <div class="music-track-item" id="mt5" onclick="selectTrack(5)">
@@ -754,13 +754,23 @@ html.is-web .content { flex: none; overflow: visible; }
         </div>
         <div class="music-track-num">6</div>
         <div class="music-track-info">
+          <div class="music-track-name">Коричневый шум - для сна</div>
+          <div class="music-track-desc">глубокое расслабление, маскирует тревожные мысли</div>
+        </div>
+      </div>
+      <div class="music-track-item" id="mt6" onclick="selectTrack(6)">
+        <div class="music-track-playing paused" id="mp6">
+          <div class="bar-anim"></div><div class="bar-anim"></div><div class="bar-anim"></div>
+        </div>
+        <div class="music-track-num">7</div>
+        <div class="music-track-info">
           <div class="music-track-name">Розовый шум - для концентрации</div>
           <div class="music-track-desc">помогает фокусироваться при работе</div>
         </div>
       </div>
 
       <div class="music-player" id="musicPlayer">
-        <div class="music-now-playing" id="musicTitle">Музыка для медитации</div>
+        <div class="music-now-playing" id="musicTitle">Гимн канала - Женский Биохакинг</div>
         <div class="music-artist">irena.bio · без голоса</div>
 
         <div class="music-progress-wrap">
@@ -1080,6 +1090,7 @@ async function irenaCheckAccess() {
 // ====== End access control ======
 
 const TRACKS = [
+  { src: 'gimn_kanala.mp3', title: 'Гимн канала - Женский Биохакинг' },
   { src: 'music_shavasana.mp3', title: 'Музыка для медитации' },
   { src: 'music_deep_meditation.mp3', title: 'Глубокое погружение' },
   { src: 'music_pineal_30min.mp3', title: '8 Hz - мягкое погружение | тишина ума, расслабление, спокойствие' },
