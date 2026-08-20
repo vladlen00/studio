@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Расслабление - мокап по макету Ирены</title>
+<!--
+  МОКАП ВЕБ-ВИДА СТУДИИ ПРАКТИК (плитка "Расслабление" в приложении).
+  Сделан 1:1 по рендеру Ирены. Картинка волны - её файл, встроен в base64.
+  Классы НЕ переносить, у studio своя разметка. Переносим числа и композицию.
+  Плиток инструментов нет намеренно: в вебе навигация живёт в приложении.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0711;
+  --card:#16121D;
+  --card-hi:#1B1526;
+  --violet:#7C5CFF;
+  --violet-soft:#B49BD8;
+  --text:#F2EEF6;
+  --muted:#9C93AB;
+  --dim:#6E657C;
+  --line:rgba(242,238,246,.08);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#000}
+body{
+  font-family:'Onest',system-ui,sans-serif;
+  color:var(--text);
+  display:flex;justify-content:center;
+  padding:24px 0;
+}
+.phone{
+  width:390px;max-width:100%;
+  background:var(--bg);
+  border-radius:26px;
+  overflow:hidden;
+  position:relative;
+  padding-bottom:100px;
+  box-shadow:0 30px 80px rgba(0,0,0,.65);
+}
+
+/* ---------- шапка ---------- */
+.top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 20px 0;
+  position:relative;z-index:4;
+}
+.circle{
+  width:44px;height:44px;flex:0 0 auto;
+  border-radius:50%;
+  border:1px solid rgba(242,238,246,.13);
+  background:rgba(242,238,246,.03);
+  display:grid;place-items:center;
+  cursor:pointer;
+  transition:background .18s;
+}
+/* неоновая кнопка возврата - картинка от Ирены, не рисуем кодом */
+.circle.neon{
+  width:52px;height:52px;
+  border:0;background:none;
+  margin-left:-4px;
+  transition:transform .18s,filter .18s;
+}
+.circle.neon img{width:100%;height:100%;display:block;mix-blend-mode:screen}
+.circle.neon:hover{transform:scale(1.05);filter:brightness(1.12)}
+.circle:hover{background:rgba(242,238,246,.08)}
+.circle svg{width:19px;height:19px;stroke:var(--text);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.top h2{
+  margin:0;font-size:16px;font-weight:500;
+  color:var(--text);letter-spacing:-.1px;
+  white-space:nowrap;
+}
+
+/* ---------- герой ---------- */
+.hero{position:relative;padding:26px 20px 30px;overflow:hidden}
+.hero .wave-wrap{
+  position:absolute;top:-18px;right:0;
+  width:268px;height:200px;
+  pointer-events:none;user-select:none;
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,#000 52%,transparent 96%);
+  mask-image:linear-gradient(to bottom,#000 52%,transparent 96%);
+}
+.hero .wave{
+  position:absolute;top:0;right:0;
+  width:100%;height:100%;
+  object-fit:cover;object-position:right center;
+  -webkit-mask-image:linear-gradient(to right,transparent 2%,#000 46%);
+  mask-image:linear-gradient(to right,transparent 2%,#000 46%);
+}
+h1{
+  font-family:'Playfair Display',Georgia,serif;
+  font-weight:400;
+  font-size:44px;line-height:1.04;
+  margin:0 0 16px;
+  letter-spacing:-.6px;
+  position:relative;z-index:2;
+}
+h1 span{display:block;color:var(--violet-soft)}
+.sub{
+  margin:0;max-width:224px;
+  font-size:13.5px;line-height:1.55;
+  color:var(--muted);
+  position:relative;z-index:2;
+}
+
+/* ---------- вкладки ---------- */
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  padding:2px 20px 0;
+}
+.tab{
+  height:44px;padding:0 6px;
+  display:inline-flex;align-items:center;justify-content:center;
+  white-space:nowrap;
+  border-radius:100px;
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--muted);
+  font-family:inherit;
+  font-size:13.5px;font-weight:400;
+  cursor:pointer;
+  transition:color .18s,border-color .18s,background .18s;
+}
+.tab:hover{color:var(--text);border-color:rgba(242,238,246,.16)}
+.tab.on{
+  color:var(--text);
+  background:rgba(124,92,255,.20);
+  border-color:rgba(124,92,255,.55);
+}
+
+/* ---------- список ---------- */
+.kicker{
+  padding:26px 20px 12px;
+  font-size:11px;font-weight:400;
+  letter-spacing:.17em;text-transform:uppercase;
+  color:var(--dim);
+}
+.list{display:flex;flex-direction:column;gap:9px;padding:0 20px}
+.item{
+  display:flex;align-items:center;gap:14px;
+  padding:15px 15px 15px 18px;
+  background:var(--card);
+  border:1px solid transparent;
+  border-radius:16px;
+  cursor:pointer;
+  transition:background .18s,border-color .18s;
+}
+.item:hover{background:var(--card-hi)}
+.item.playing{
+  background:linear-gradient(100deg,rgba(124,92,255,.16),rgba(22,18,29,.95) 68%);
+  border-color:rgba(124,92,255,.28);
+}
+.meta{flex:1;min-width:0}
+.name{font-size:16px;font-weight:400;letter-spacing:-.1px;margin-bottom:4px}
+.note{font-size:12.5px;color:var(--dim)}
+.note i{font-style:normal;padding:0 5px;opacity:.6}
+.play{
+  flex:0 0 auto;
+  width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(242,238,246,.16);
+  background:transparent;
+  display:grid;place-items:center;
+  transition:background .18s,border-color .18s;
+}
+.item:hover .play{background:rgba(242,238,246,.06);border-color:rgba(242,238,246,.28)}
+.play svg{width:13px;height:13px;fill:var(--text);margin-left:2px}
+.item.playing .play{background:rgba(124,92,255,.22);border-color:rgba(124,92,255,.5)}
+.item.playing .play svg{margin-left:0}
+
+
+/* ---------- панели вкладок ---------- */
+.panel{display:none}
+.panel.on{display:block}
+
+/* музыка */
+.track{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 15px 14px 18px;
+  background:var(--card);
+  border:1px solid transparent;
+  border-radius:16px;cursor:pointer;
+  transition:background .18s,border-color .18s;
+}
+.track:hover{background:var(--card-hi)}
+.track.playing{
+  background:linear-gradient(100deg,rgba(124,92,255,.16),rgba(22,18,29,.95) 68%);
+  border-color:rgba(124,92,255,.28);
+}
+.track .num{
+  flex:0 0 auto;width:18px;
+  font-size:12px;color:var(--dim);text-align:center;
+}
+.track.playing .num{color:var(--violet-soft)}
+
+/* в тишине */
+.silence{padding:6px 20px 0;text-align:center}
+.dial{
+  position:relative;width:206px;height:206px;
+  margin:12px auto 22px;
+  display:grid;place-items:center;
+}
+.dial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.dial .ring{fill:none;stroke:rgba(242,238,246,.07);stroke-width:2}
+.dial .arc{
+  fill:none;stroke:url(#g);stroke-width:2.5;stroke-linecap:round;
+  stroke-dasharray:622;stroke-dashoffset:190;
+}
+.dial-in{position:relative;z-index:2}
+.dial-num{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:62px;line-height:1;color:var(--text);
+}
+.dial-unit{
+  font-size:11px;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--dim);margin-top:8px;
+}
+.presets{display:flex;gap:8px;justify-content:center;margin-bottom:22px}
+.preset{
+  font-family:inherit;font-size:14px;
+  height:40px;padding:0 17px;border-radius:100px;
+  border:1px solid var(--line);background:transparent;
+  color:var(--muted);cursor:pointer;
+  transition:color .18s,border-color .18s,background .18s;
+}
+.preset:hover{color:var(--text);border-color:rgba(242,238,246,.16)}
+.preset.on{
+  color:var(--text);background:rgba(124,92,255,.20);
+  border-color:rgba(124,92,255,.55);
+}
+.start{
+  width:100%;height:54px;border:0;border-radius:100px;
+  font-family:inherit;font-size:16px;font-weight:500;color:#EFE6F7;
+  background:radial-gradient(80% 120% at 50% 0%,#7E5E9E 0%,#5F4585 70%,#4A3468 100%);
+  box-shadow:0 0 26px rgba(146,106,196,.3);
+  cursor:pointer;
+}
+.hint{
+  margin:16px 0 0;font-size:12.5px;line-height:1.55;
+  color:var(--dim);
+}
+
+/* ---------- мини-плеер ---------- */
+.mini{
+  position:absolute;left:12px;right:12px;bottom:12px;
+  display:flex;align-items:center;gap:11px;
+  padding:11px 13px;
+  border-radius:20px;
+  background:rgba(27,21,38,.94);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(124,92,255,.18);
+  box-shadow:0 14px 36px rgba(0,0,0,.6);
+}
+.eq{display:flex;align-items:center;gap:3px;height:26px;flex:0 0 auto;padding:0 4px}
+.eq span{width:2.5px;border-radius:2px;background:#E8DCF2;animation:b 1.2s ease-in-out infinite}
+.eq span:nth-child(1){height:11px;animation-delay:0s}
+.eq span:nth-child(2){height:20px;animation-delay:.12s}
+.eq span:nth-child(3){height:26px;animation-delay:.24s}
+.eq span:nth-child(4){height:16px;animation-delay:.36s}
+.eq span:nth-child(5){height:22px;animation-delay:.48s}
+@keyframes b{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.eq span{animation:none}}
+.mini-meta{flex:1;min-width:0}
+.mini-kicker{font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+.mini-name{font-size:13px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.skip{
+  flex:0 0 auto;font-family:inherit;
+  width:40px;height:40px;border-radius:50%;
+  font-size:12px;color:var(--text);
+  border:1px solid rgba(242,238,246,.16);
+  background:transparent;cursor:pointer;
+  display:grid;place-items:center;
+  transition:background .18s,border-color .18s;
+}
+.skip:hover{background:rgba(242,238,246,.06);border-color:rgba(242,238,246,.3)}
+.mini-play{
+  flex:0 0 auto;width:52px;height:52px;border-radius:50%;
+  border:0;cursor:pointer;
+  background:radial-gradient(72% 72% at 50% 42%,#7E5E9E 0%,#5F4585 68%,#4A3468 100%);
+  display:grid;place-items:center;
+  box-shadow:0 0 26px rgba(146,106,196,.34);
+}
+.mini-play svg{width:15px;height:15px;fill:#EFE6F7;margin-left:2px}
+.chev{flex:0 0 auto;width:22px;height:22px;display:grid;place-items:center;cursor:pointer}
+.chev svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="top">
+    <div class="circle neon"><img src="data:image/webp;base64,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" alt="Назад"></div>
+    <h2>Студия практик Ирены</h2>
+    <div class="circle"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg></div>
+  </div>
+
+  <div class="hero">
+    <div class="wave-wrap"><img class="wave" src="data:image/webp;base64,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" alt=""></div>
+    <h1>Практики<span>для баланса</span></h1>
+    <p class="sub">Выбирай состояние, которое хочешь развивать сегодня</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on">Медитации</button>
+    <button class="tab">Дыхание</button>
+    <button class="tab">Музыка</button>
+    <button class="tab">В тишине</button>
+  </div>
+
+  <div class="panel on" data-panel="0">
+  <div class="kicker">Практики с голосом Ирены</div>
+
+  <div class="list">
+    <div class="item playing">
+      <div class="meta">
+        <div class="name">Глубокое расслабление</div>
+        <div class="note">Дневная<i>•</i>15 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Глубокий сон</div>
+        <div class="note">Ночная<i>•</i>15 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Внутреннее спокойствие</div>
+        <div class="note">От тревожности<i>•</i>19 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Медитация стройности</div>
+        <div class="note">Тело<i>•</i>17 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Медитация «Один день»</div>
+        <div class="note">Дневная<i>•</i>25 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Детская медитация</div>
+        <div class="note">Детям 7-12<i>•</i>20 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Митохондрии</div>
+        <div class="note">Детям 7-12<i>•</i>23 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Идеальная реальность</div>
+        <div class="note">Визуализация<i>•</i>18 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Горит внутри</div>
+        <div class="note">Активная<i>•</i>16 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Отпускание контроля</div>
+        <div class="note">Про контроль<i>•</i>16 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="panel" data-panel="1">
+    <div class="kicker">Дыхательные практики</div>
+    <div class="list">
+    <div class="item">
+      <div class="meta">
+        <div class="name">Дыхание 4-7-8</div>
+        <div class="note">Перед сном<i>•</i>6 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Дыхание 4-4-6</div>
+        <div class="note">Успокоение<i>•</i>5 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Квадратное дыхание</div>
+        <div class="note">Собраться<i>•</i>4 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Глубокое диафрагмальное</div>
+        <div class="note">Снять зажим<i>•</i>7 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    </div>
+  </div>
+
+  <div class="panel" data-panel="2">
+    <div class="kicker">Треки</div>
+    <div class="list">
+    <div class="track playing">
+      <div class="num">1</div>
+      <div class="meta">
+        <div class="name">Гимн канала - Женский Биохакинг</div>
+        <div class="note">наш клубный трек</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg></div>
+    </div>
+    <div class="track">
+      <div class="num">2</div>
+      <div class="meta">
+        <div class="name">Музыка для медитации</div>
+        <div class="note">Шавасана</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="track">
+      <div class="num">3</div>
+      <div class="meta">
+        <div class="name">Глубокое погружение</div>
+        <div class="note">30 мин</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="track">
+      <div class="num">4</div>
+      <div class="meta">
+        <div class="name">8 Hz - мягкое погружение</div>
+        <div class="note">тишина ума, расслабление</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="track">
+      <div class="num">5</div>
+      <div class="meta">
+        <div class="name">528 Hz - альфа-волны</div>
+        <div class="note">снижение кортизола, обновление</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="track">
+      <div class="num">6</div>
+      <div class="meta">
+        <div class="name">Коричневый шум</div>
+        <div class="note">для сна, маскирует тревожные мысли</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    <div class="track">
+      <div class="num">7</div>
+      <div class="meta">
+        <div class="name">Розовый шум</div>
+        <div class="note">для концентрации в работе</div>
+      </div>
+      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+    </div>
+  </div>
+
+  <div class="panel" data-panel="3">
+    <div class="kicker">Тишина по таймеру</div>
+    <div class="silence">
+      <div class="dial">
+        <svg viewBox="0 0 206 206">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#B49BD8"/><stop offset="100%" stop-color="#5F4585"/>
+          </linearGradient></defs>
+          <circle class="ring" cx="103" cy="103" r="99"/>
+          <circle class="arc" cx="103" cy="103" r="99"/>
+        </svg>
+        <div class="dial-in">
+          <div class="dial-num">15</div>
+          <div class="dial-unit">минут</div>
+        </div>
+      </div>
+      <div class="presets">
+        <button class="preset">5</button>
+        <button class="preset">10</button>
+        <button class="preset on">15</button>
+        <button class="preset">20</button>
+        <button class="preset">30</button>
+      </div>
+      <button class="start">Начать</button>
+      <p class="hint">Мягкий сигнал прозвучит в конце. Экран можно гасить, таймер продолжит идти.</p>
+    </div>
+  </div>
+
+  <div class="mini">
+    <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-meta">
+      <div class="mini-kicker">Сейчас играет</div>
+      <div class="mini-name">Это серьезней чем мы думали</div>
+    </div>
+    <button class="skip">-15</button>
+    <button class="mini-play"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button>
+    <button class="skip">+15</button>
+    <div class="chev"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('.tab');
+  var panels = document.querySelectorAll('.panel');
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){
+      tabs.forEach(function(x){ x.classList.remove('on'); });
+      panels.forEach(function(p){ p.classList.remove('on'); });
+      t.classList.add('on');
+      var target = document.querySelector('.panel[data-panel="' + i + '"]');
+      if (target) target.classList.add('on');
+    });
+  });
+  var presets = document.querySelectorAll('.preset');
+  var num = document.querySelector('.dial-num');
+  var arc = document.querySelector('.arc');
+  presets.forEach(function(b){
+    b.addEventListener('click', function(){
+      presets.forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      num.textContent = b.textContent;
+      var frac = Math.min(parseInt(b.textContent,10) / 30, 1);
+      arc.style.strokeDashoffset = 622 - 622 * frac;
+    });
+  });
+})();
+</script>
+</body>
+</html>
