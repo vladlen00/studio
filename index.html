@@ -732,10 +732,14 @@ body.is-web .web-mini.on {
   position: fixed; left: 12px; right: 12px;
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   max-width: 480px; margin: 0 auto; z-index: 60;
-  padding: 11px 13px 16px;
+  padding: 11px 13px 22px;          /* +6px: в них ложится зона касания линии */
   border-radius: 20px;
-  background: rgba(27, 21, 38, .94);
-  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  /* backdrop-filter УБРАН НАМЕРЕННО: на iOS элемент с ним получает свой композиторный
+     слой, и в связке с position: fixed этот слой уезжает вместе со страницей (замер
+     20.08 на iPhone: бар останавливался посреди экрана). В Chromium бар стоит намертво
+     при любой прокрутке - проверено, - так что это единственная iOS-специфичная деталь,
+     которая тут была. Размытие компенсируем плотностью фона: .98 вместо .94. */
+  background: rgba(27, 21, 38, .98);
   border: 1px solid rgba(124, 92, 255, .18);
   box-shadow: 0 14px 36px rgba(0, 0, 0, .6);
 }
@@ -770,9 +774,16 @@ body.is-web .web-mini-play {
 /* Линия прогресса - ОТСТУПЛЕНИЕ ОТ МОКАПА: карточка с ползунком в вебе скрыта,
    а шагами по 15 секунд 30-минутный трек не пролистать. */
 body.is-web .web-mini-line {
-  position: absolute; left: 13px; right: 13px; bottom: 7px;
+  position: absolute; left: 13px; right: 13px; bottom: 9px;
   height: 3px; border-radius: 3px;
   background: rgba(242, 238, 246, .10); cursor: pointer;
+}
+/* Невидимая зона касания 21px: сама полоса остаётся 3px, пальцу есть куда попасть.
+   Вверх ровно до нижней кромки кнопки play (зазор 1px), вниз до края бара - проверено
+   elementFromPoint, тапы у кнопок зона не перехватывает. Математика перемотки не
+   меняется: обработчик считает от getBoundingClientRect() видимой полосы. */
+body.is-web .web-mini-line::before {
+  content: ""; position: absolute; left: 0; right: 0; top: -9px; bottom: -9px;
 }
 body.is-web .web-mini-line i { display: block; width: 0; height: 100%; border-radius: 3px; background: var(--w-violet-soft); }
 
