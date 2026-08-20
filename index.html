@@ -567,8 +567,9 @@ body.is-web {
 /* В мокапе фон ровный: два радиальных пятна .bg относятся к прежнему виду. */
 body.is-web .bg { background: none; }
 
-/* Колонке нужен СВОЙ фон: .app создаёт контекст наложения (position+z-index),
-   и без фона mix-blend-mode у кнопки возврата подмешивать не к чему. */
+/* Явный фон колонки. Изначально понадобился под mix-blend-mode кнопки; блендинга
+   больше нет (у картинки своя альфа), но правило оставлено осознанно: .app создаёт
+   контекст наложения, и собственный фон у него - защита от того же класса сюрпризов. */
 body.is-web .app { background: var(--w-bg); }
 
 /* --- шапка: кнопка слева, название по центру, справа пусто --- */
@@ -584,14 +585,15 @@ body.is-web .header-title {
   color: var(--w-text); text-shadow: none;
 }
 /* Кнопка возврата: картинка Ирены вместо пилюли. Текст «← В приложение»
-   ОСТАЁТСЯ в разметке для доступности - не удаляем, а сжимаем в ноль. */
+   ОСТАЁТСЯ в разметке для доступности - не удаляем, а сжимаем в ноль.
+   У картинки СВОЯ альфа (вырезана по яркости), поэтому mix-blend-mode
+   не нужен: подложки нет, кольцо лежит на чистом фоне. */
 body.is-web .app-back {
   position: absolute; top: 20px; left: 20px; z-index: 4;
   width: 52px; height: 52px;
   margin: 0; padding: 0;
-  background: url("img/back-neon.webp") center / cover no-repeat;
+  background: url("img/back-neon.webp?a=2") center / cover no-repeat;
   border: 0; border-radius: 0;
-  mix-blend-mode: screen;
   font-size: 0; line-height: 0; color: transparent;
   transition: transform .18s, filter .18s;
 }
