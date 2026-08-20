@@ -636,6 +636,66 @@ body.is-web .web-sub {
   color: var(--w-muted);
 }
 
+/* --- вкладки: четыре равные колонки, без горизонтального скролла --- */
+body.is-web .tabs {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 6px; padding: 2px 20px 0;
+  overflow: visible;                      /* был overflow-x: auto - скроллер уходит */
+}
+body.is-web .tab {
+  height: 44px; padding: 0 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 100px;
+  border: 1px solid var(--w-line);
+  background: transparent;
+  color: var(--w-muted);
+  font-family: 'Onest', system-ui, sans-serif;
+  font-size: 13.5px; font-weight: 400; letter-spacing: normal;
+}
+body.is-web .tab.active {
+  color: var(--w-text);
+  background: rgba(124, 92, 255, .20);
+  border-color: rgba(124, 92, 255, .55);
+}
+
+/* --- список практик: без иконок, кнопка play обводкой --- */
+body.is-web .content { padding: 0 20px 40px; }
+body.is-web .section-label {
+  font-size: 11px; letter-spacing: .17em;
+  color: var(--w-dim);
+  margin: 26px 0 12px;
+}
+body.is-web .track-item {
+  padding: 15px 15px 15px 18px;
+  gap: 14px; border-radius: 16px;
+  background: var(--w-card);
+  border-color: transparent;
+  margin-bottom: 9px;
+}
+body.is-web .track-item:hover,
+body.is-web .track-item:active { background: var(--w-card-hi); border-color: transparent; }
+/* ЭМОДЗИ ПРЯЧЕМ, А НЕ УДАЛЯЕМ: разметка общая с телеграмом, там иконки остаются. */
+body.is-web .track-icon { display: none; }
+body.is-web .track-name {
+  font-family: 'Onest', system-ui, sans-serif;
+  font-weight: 400; font-size: 16px; letter-spacing: -.1px;
+  color: var(--w-text); margin-bottom: 4px;
+}
+body.is-web .track-desc {
+  font-size: 12.5px; letter-spacing: normal;
+  color: var(--w-dim); margin-top: 0;
+}
+body.is-web .track-play {
+  width: 44px; height: 44px;
+  background: transparent;
+  border: 1px solid rgba(242, 238, 246, .16);
+}
+body.is-web .track-play svg { width: 13px; height: 13px; fill: var(--w-text); }
+body.is-web .track-item:hover .track-play {
+  background: rgba(242, 238, 246, .06);
+  border-color: rgba(242, 238, 246, .28);
+}
+
 /* ВЕБ: вернуть нативный скролл страницы (в ТГ остаётся фикс-вьюпорт .content со своим скроллом) */
 html.is-web, html.is-web body { height: auto; min-height: 100%; overflow: visible; }
 html.is-web .app { height: auto; min-height: 100vh; }
