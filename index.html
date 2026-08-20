@@ -727,22 +727,25 @@ body.is-web .music-track-item.active .music-track-name { color: var(--w-text); }
 body.is-web .music-track-desc { font-size: 12.5px; letter-spacing: normal; color: var(--w-dim); }
 
 /* --- мини-бар --- */
-body.is-web .web-mini.on {
-  display: flex; align-items: center; gap: 11px;
-  position: fixed; left: 12px; right: 12px;
-  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  max-width: 480px; margin: 0 auto; z-index: 60;
-  padding: 11px 13px 22px;          /* +6px: в них ложится зона касания линии */
-  border-radius: 20px;
-  /* backdrop-filter УБРАН НАМЕРЕННО: на iOS элемент с ним получает свой композиторный
-     слой, и в связке с position: fixed этот слой уезжает вместе со страницей (замер
-     20.08 на iPhone: бар останавливался посреди экрана). В Chromium бар стоит намертво
-     при любой прокрутке - проверено, - так что это единственная iOS-специфичная деталь,
-     которая тут была. Размытие компенсируем плотностью фона: .98 вместо .94. */
+/* ГЕОМЕТРИЯ СКОПИРОВАНА ЦЕЛИКОМ с #mini-player приложения (irenabio-app/style.css:780).
+   Плавающая пилюля из мокапа на iOS уезжала вместе со страницей: сначала грешили на
+   backdrop-filter - не подтвердилось, в Chromium дефект не воспроизводится вовсе.
+   Второй раз не гадаем, берём то, что живёт на айфонах давно. Отличий от донора два,
+   оба вынужденные: 1) padding-bottom 20px вместо 9px - у нас есть линия прогресса,
+   которой у донора нет; 2) цвета наши, из палитры студии. Всё остальное - привязка
+   к кромке, ширина, z-index, отсутствие скругления, направление тени, показ через
+   атрибут hidden, запас снизу на BODY - один в один. */
+body.is-web .web-mini:not([hidden]) {
+  display: flex; align-items: center; gap: 10px;
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  width: 100%; max-width: 480px; margin: 0 auto;
+  padding: 9px 12px calc(20px + env(safe-area-inset-bottom, 0px));
   background: rgba(27, 21, 38, .98);
-  border: 1px solid rgba(124, 92, 255, .18);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, .6);
+  border-top: 1px solid rgba(124, 92, 255, .18);
+  box-shadow: 0 -8px 26px rgba(0, 0, 0, .55);
+  font-family: 'Onest', system-ui, sans-serif;
 }
+
 body.is-web .web-mini-eq { display: flex; align-items: center; gap: 3px; height: 26px; padding: 0 4px; flex: 0 0 auto; }
 body.is-web .web-mini-eq span { width: 2.5px; border-radius: 2px; background: #E8DCF2; animation: webEq 1.2s ease-in-out infinite; }
 body.is-web .web-mini-eq span:nth-child(1) { height: 11px; animation-delay: 0s; }
@@ -774,7 +777,8 @@ body.is-web .web-mini-play {
 /* Линия прогресса - ОТСТУПЛЕНИЕ ОТ МОКАПА: карточка с ползунком в вебе скрыта,
    а шагами по 15 секунд 30-минутный трек не пролистать. */
 body.is-web .web-mini-line {
-  position: absolute; left: 13px; right: 13px; bottom: 9px;
+  position: absolute; left: 12px; right: 12px;
+  bottom: calc(9px + env(safe-area-inset-bottom, 0px));
   height: 3px; border-radius: 3px;
   background: rgba(242, 238, 246, .10); cursor: pointer;
 }
@@ -782,14 +786,24 @@ body.is-web .web-mini-line {
    Вверх ровно до нижней кромки кнопки play (зазор 1px), вниз до края бара - проверено
    elementFromPoint, тапы у кнопок зона не перехватывает. Математика перемотки не
    меняется: обработчик считает от getBoundingClientRect() видимой полосы. */
+/* Мишень 44px, как у .mp-close донора: крестик не вжат в кромку. */
+body.is-web .web-mini-close {
+  flex: 0 0 auto; width: 44px; height: 44px;
+  border: 0; background: transparent; padding: 0; cursor: pointer;
+  color: var(--w-muted);
+  display: grid; place-items: center; margin-left: 2px;
+}
+body.is-web .web-mini-close:active { color: var(--w-text); }
+
 body.is-web .web-mini-line::before {
-  content: ""; position: absolute; left: 0; right: 0; top: -9px; bottom: -9px;
+  content: ""; position: absolute; left: 0; right: 0; top: -8px; bottom: -9px;
 }
 body.is-web .web-mini-line i { display: block; width: 0; height: 100%; border-radius: 3px; background: var(--w-violet-soft); }
 
 /* Низ экрана: бар перекрывает подпись и последнюю карточку - разводим. */
 body.is-web.has-web-mini .author { display: none; }
-body.is-web.has-web-mini .content { padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+/* Запас на BODY, а не на .content - как у донора (body.has-mini). */
+body.is-web.has-web-mini { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 
 /* ВЕБ: вернуть нативный скролл страницы (в ТГ остаётся фикс-вьюпорт .content со своим скроллом) */
 html.is-web, html.is-web body { height: auto; min-height: 100%; overflow: visible; }
@@ -1138,7 +1152,7 @@ html.is-web .content { flex: none; overflow: visible; }
 <!-- ВЕБ-МИНИ-ПЛЕЕР МУЗЫКИ. Скрыт по умолчанию (.web-mini { display: none }),
      показывается только под body.is-web и только когда музыка заиграла.
      В телеграме узлы есть, но не рисуются и JS их не трогает. -->
-<div class="web-mini" id="webMini" aria-hidden="true">
+<div class="web-mini" id="webMini" hidden aria-hidden="true">
   <div class="web-mini-eq"><span></span><span></span><span></span><span></span><span></span></div>
   <div class="web-mini-meta">
     <div class="web-mini-kicker">Сейчас играет</div>
@@ -1147,6 +1161,10 @@ html.is-web .content { flex: none; overflow: visible; }
   <button class="web-mini-skip" type="button" onclick="musicSkip(-15)" aria-label="Назад 15 секунд">-15</button>
   <button class="web-mini-play" type="button" id="webMiniPlay" onclick="toggleMusic()" aria-label="Воспроизвести"></button>
   <button class="web-mini-skip" type="button" onclick="musicSkip(15)" aria-label="Вперёд 15 секунд">+15</button>
+  <button class="web-mini-close" type="button" id="webMiniClose" aria-label="Закрыть">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
   <div class="web-mini-line" id="webMiniLine"><i id="webMiniFill"></i></div>
 </div>
 
@@ -1707,13 +1725,23 @@ if (irenaIsWeb()) (function () {
     fill.style.width = (dur ? (musicAudio.currentTime / dur * 100) : 0) + '%';
   }
   function show() {
-    if (!bar.classList.contains('on')) {
-      bar.classList.add('on');
+    if (bar.hidden) {
+      bar.hidden = false;
       bar.setAttribute('aria-hidden', 'false');
       document.body.classList.add('has-web-mini');
     }
     sync();
   }
+  // Закрыть: остановить, спрятать, вернуть подпись irena.bio и убрать запас снизу.
+  // Повторный тап по треку поднимет бар заново - show() зовётся по событию play.
+  function dismiss() {
+    if (musicPlaying) toggleMusic();   // именно toggleMusic, а не musicAudio.pause():
+                                       // иначе флаг musicPlaying разъедется с реальностью
+    bar.hidden = true;
+    bar.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('has-web-mini');
+  }
+  document.getElementById('webMiniClose').addEventListener('click', dismiss);
 
   musicAudio.addEventListener('play', show);
   musicAudio.addEventListener('pause', sync);
