@@ -544,6 +544,7 @@ html, body {
 /* Веб-контекст (открыто с app.irenabio.com): возврат, скрыть дубль-tools, медитации "скоро" */
 .app-back { display: none; }
 .web-hero { display: none; }
+.web-mini { display: none; }
 body.is-web .app-back { display: inline-flex; align-items: center; gap: 6px; margin: 12px 16px 0; padding: 8px 14px; background: rgba(160,120,255,0.15); border: 1px solid rgba(160,120,255,0.35); border-radius: 12px; color: #e0d8f0; font-size: 13px; font-weight: 600; text-decoration: none; }
 body.is-web .tools-section { display: none; }
 /* Правила .is-soon сняты 20.08: класс не ставится ниоткуда с тех пор, как в
@@ -695,6 +696,89 @@ body.is-web .track-item:hover .track-play {
   background: rgba(242, 238, 246, .06);
   border-color: rgba(242, 238, 246, .28);
 }
+
+/* --- музыка: номера остаются, играющая строка подсвечена --- */
+body.is-web .music-player { display: none; }     /* её роль берёт мини-бар */
+body.is-web .music-track-item {
+  padding: 14px 15px 14px 18px; gap: 14px;
+  border-radius: 16px; margin-bottom: 9px;
+  background: var(--w-card); border: 1px solid transparent;
+}
+body.is-web .music-track-item:hover { background: var(--w-card-hi); }
+body.is-web .music-track-item.active {
+  background: linear-gradient(100deg, rgba(124,92,255,.16), rgba(22,18,29,.95) 68%);
+  border-color: rgba(124,92,255,.28);
+}
+/* Полоски-эквалайзер уезжают в мини-бар, номер остаётся виден ВСЕГДА.
+   Селекторы с .active - не для красоты: исходные правила весят три класса,
+   двух классов на перебивание не хватило бы. */
+body.is-web .music-track-playing,
+body.is-web .music-track-item.active .music-track-playing { display: none; }
+body.is-web .music-track-num {
+  width: 18px; font-family: 'Onest', system-ui, sans-serif;
+  font-size: 12px; color: var(--w-dim);
+}
+body.is-web .music-track-item.active .music-track-num { display: block; color: var(--w-violet-soft); }
+body.is-web .music-track-name {
+  font-family: 'Onest', system-ui, sans-serif;
+  font-size: 16px; font-weight: 400; color: var(--w-text);
+}
+body.is-web .music-track-item.active .music-track-name { color: var(--w-text); }
+body.is-web .music-track-desc { font-size: 12.5px; letter-spacing: normal; color: var(--w-dim); }
+
+/* --- мини-бар --- */
+body.is-web .web-mini.on {
+  display: flex; align-items: center; gap: 11px;
+  position: fixed; left: 12px; right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  max-width: 480px; margin: 0 auto; z-index: 60;
+  padding: 11px 13px 16px;
+  border-radius: 20px;
+  background: rgba(27, 21, 38, .94);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border: 1px solid rgba(124, 92, 255, .18);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, .6);
+}
+body.is-web .web-mini-eq { display: flex; align-items: center; gap: 3px; height: 26px; padding: 0 4px; flex: 0 0 auto; }
+body.is-web .web-mini-eq span { width: 2.5px; border-radius: 2px; background: #E8DCF2; animation: webEq 1.2s ease-in-out infinite; }
+body.is-web .web-mini-eq span:nth-child(1) { height: 11px; animation-delay: 0s; }
+body.is-web .web-mini-eq span:nth-child(2) { height: 20px; animation-delay: .12s; }
+body.is-web .web-mini-eq span:nth-child(3) { height: 26px; animation-delay: .24s; }
+body.is-web .web-mini-eq span:nth-child(4) { height: 16px; animation-delay: .36s; }
+body.is-web .web-mini-eq span:nth-child(5) { height: 22px; animation-delay: .48s; }
+@keyframes webEq { 0%, 100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { body.is-web .web-mini-eq span { animation: none; } }
+body.is-web .web-mini.paused .web-mini-eq span { animation-play-state: paused; }
+body.is-web .web-mini-meta { flex: 1; min-width: 0; }
+body.is-web .web-mini-kicker { font-size: 9px; letter-spacing: .17em; text-transform: uppercase; color: var(--w-dim); margin-bottom: 3px; }
+body.is-web .web-mini-name { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--w-text); }
+body.is-web .web-mini-skip {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%;
+  font-family: 'Onest', system-ui, sans-serif; font-size: 12px;
+  color: var(--w-text); border: 1px solid rgba(242, 238, 246, .16);
+  background: transparent; cursor: pointer;
+  display: grid; place-items: center; padding: 0;
+}
+body.is-web .web-mini-skip:active { background: rgba(242, 238, 246, .10); }
+body.is-web .web-mini-play {
+  flex: 0 0 auto; width: 52px; height: 52px; border-radius: 50%;
+  border: 0; cursor: pointer; padding: 0;
+  background: radial-gradient(72% 72% at 50% 42%, #7E5E9E 0%, #5F4585 68%, #4A3468 100%);
+  box-shadow: 0 0 26px rgba(146, 106, 196, .34);
+  display: grid; place-items: center;
+}
+/* Линия прогресса - ОТСТУПЛЕНИЕ ОТ МОКАПА: карточка с ползунком в вебе скрыта,
+   а шагами по 15 секунд 30-минутный трек не пролистать. */
+body.is-web .web-mini-line {
+  position: absolute; left: 13px; right: 13px; bottom: 7px;
+  height: 3px; border-radius: 3px;
+  background: rgba(242, 238, 246, .10); cursor: pointer;
+}
+body.is-web .web-mini-line i { display: block; width: 0; height: 100%; border-radius: 3px; background: var(--w-violet-soft); }
+
+/* Низ экрана: бар перекрывает подпись и последнюю карточку - разводим. */
+body.is-web.has-web-mini .author { display: none; }
+body.is-web.has-web-mini .content { padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
 
 /* ВЕБ: вернуть нативный скролл страницы (в ТГ остаётся фикс-вьюпорт .content со своим скроллом) */
 html.is-web, html.is-web body { height: auto; min-height: 100%; overflow: visible; }
@@ -1038,6 +1122,21 @@ html.is-web .content { flex: none; overflow: visible; }
     </div>
 
   </div>
+</div>
+
+<!-- ВЕБ-МИНИ-ПЛЕЕР МУЗЫКИ. Скрыт по умолчанию (.web-mini { display: none }),
+     показывается только под body.is-web и только когда музыка заиграла.
+     В телеграме узлы есть, но не рисуются и JS их не трогает. -->
+<div class="web-mini" id="webMini" aria-hidden="true">
+  <div class="web-mini-eq"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="web-mini-meta">
+    <div class="web-mini-kicker">Сейчас играет</div>
+    <div class="web-mini-name" id="webMiniName"></div>
+  </div>
+  <button class="web-mini-skip" type="button" onclick="musicSkip(-15)" aria-label="Назад 15 секунд">-15</button>
+  <button class="web-mini-play" type="button" id="webMiniPlay" onclick="toggleMusic()" aria-label="Воспроизвести"></button>
+  <button class="web-mini-skip" type="button" onclick="musicSkip(15)" aria-label="Вперёд 15 секунд">+15</button>
+  <div class="web-mini-line" id="webMiniLine"><i id="webMiniFill"></i></div>
 </div>
 
 <div class="author">irena.bio</div>
@@ -1575,6 +1674,62 @@ if (irenaIsWeb()) {
     document.head.appendChild(css);
   })();
 }
+// ===== ВЕБ: мини-плеер музыки. В телеграме не выполняется ни строки. =====
+if (irenaIsWeb()) (function () {
+  var bar  = document.getElementById('webMini');
+  var name = document.getElementById('webMiniName');
+  var btn  = document.getElementById('webMiniPlay');
+  var fill = document.getElementById('webMiniFill');
+  var line = document.getElementById('webMiniLine');
+  if (!bar) return;
+
+  // Название в TRACKS склеено с описанием через "|". ДАННЫЕ НЕ ТРОГАЕМ:
+  // режем только на показе, телеграм видит строку целиком.
+  function trackName(i) { return String((TRACKS[i] || {}).title || '').split('|')[0].trim(); }
+
+  function sync() {
+    name.textContent = trackName(currentTrack);
+    btn.innerHTML = musicPlaying ? PAUSE_SVG : PLAY_SVG;
+    btn.setAttribute('aria-label', musicPlaying ? 'Пауза' : 'Воспроизвести');
+    bar.classList.toggle('paused', !musicPlaying);
+    var dur = isFinite(musicAudio.duration) ? musicAudio.duration : 0;
+    fill.style.width = (dur ? (musicAudio.currentTime / dur * 100) : 0) + '%';
+  }
+  function show() {
+    if (!bar.classList.contains('on')) {
+      bar.classList.add('on');
+      bar.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('has-web-mini');
+    }
+    sync();
+  }
+
+  musicAudio.addEventListener('play', show);
+  musicAudio.addEventListener('pause', sync);
+  musicAudio.addEventListener('timeupdate', sync);
+  musicAudio.addEventListener('loadedmetadata', sync);
+
+  // Перемотка тапом по линии: карточка с ползунком в вебе скрыта, а шагами
+  // по 15 секунд 30-минутный трек не пролистать.
+  line.addEventListener('click', function (e) {
+    var dur = isFinite(musicAudio.duration) ? musicAudio.duration : 0;
+    if (!dur) return;
+    var r = line.getBoundingClientRect();
+    musicAudio.currentTime = Math.min(dur, Math.max(0, (e.clientX - r.left) / r.width * dur));
+    sync();
+  });
+
+  // Тап по строке трека = играть. В мокапе у каждой строки своя кнопка play;
+  // семь кнопок в общую с телеграмом разметку не добавляем - роль кнопки берёт
+  // сама строка. Повторный тап по текущей = пауза/продолжить.
+  var origSelect = selectTrack;
+  window.selectTrack = function (i) {
+    if (i === currentTrack && musicAudio.src) { toggleMusic(); return; }
+    origSelect(i);
+    if (!musicPlaying) toggleMusic();
+  };
+})();
+
 irenaCheckAccess().then(ok => { if (ok) init(); });
 </script>
 
