@@ -545,9 +545,27 @@ html, body {
 .app-back { display: none; }
 body.is-web .app-back { display: inline-flex; align-items: center; gap: 6px; margin: 12px 16px 0; padding: 8px 14px; background: rgba(160,120,255,0.15); border: 1px solid rgba(160,120,255,0.35); border-radius: 12px; color: #e0d8f0; font-size: 13px; font-weight: 600; text-decoration: none; }
 body.is-web .tools-section { display: none; }
-body.is-web #panel-meditations .track-item.is-soon { opacity: .5; cursor: default; }
-body.is-web #panel-meditations .track-item.is-soon .track-play { display: none; }
-body.is-web #panel-meditations .track-item.is-soon::after { content: "скоро"; align-self: center; font-size: 11px; font-weight: 700; color: #cbb8f0; background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 999px; }
+/* Правила .is-soon сняты 20.08: класс не ставится ниоткуда с тех пор, как в
+   RELAX_WEB_APPS появились все 12 ключей - в вебе кликабельны все практики. */
+
+/* ===== ВЕБ-ВИД: редизайн по макету Ирены (эталон - design/mockup-relax.html) =====
+   Всё под is-web. Телеграм-вид байт в байт прежний. Префикс --w- чтобы не
+   столкнуться ни с чем: своих кастомных свойств у студии нет ни одного. */
+html.is-web {
+  --w-bg:#0A0711; --w-card:#16121D; --w-card-hi:#1B1526;
+  --w-violet:#7C5CFF; --w-violet-soft:#B49BD8;
+  --w-text:#F2EEF6; --w-muted:#9C93AB; --w-dim:#6E657C;
+  --w-line:rgba(242,238,246,.08);
+  background: var(--w-bg);
+}
+body.is-web {
+  background: var(--w-bg);
+  color: var(--w-text);
+  font-family: 'Onest', system-ui, -apple-system, sans-serif;
+}
+/* В мокапе фон ровный: два радиальных пятна .bg относятся к прежнему виду. */
+body.is-web .bg { background: none; }
+
 /* ВЕБ: вернуть нативный скролл страницы (в ТГ остаётся фикс-вьюпорт .content со своим скроллом) */
 html.is-web, html.is-web body { height: auto; min-height: 100%; overflow: visible; }
 html.is-web .app { height: auto; min-height: 100vh; }
@@ -1400,7 +1418,24 @@ function init() {
   } catch (e) {}
 })();
 
-if (irenaIsWeb()) { document.documentElement.classList.add("is-web"); document.body.classList.add("is-web"); }
+if (irenaIsWeb()) {
+  document.documentElement.classList.add("is-web");
+  document.body.classList.add("is-web");
+  // Шрифты веб-вида грузим ТОЛЬКО здесь. В телеграме ни одно правило их не
+  // применяет, поэтому тянуть их туда незачем - женщина не платит за то, чего не видит.
+  (function loadWebFonts() {
+    var pre1 = document.createElement("link");
+    pre1.rel = "preconnect"; pre1.href = "https://fonts.googleapis.com";
+    var pre2 = document.createElement("link");
+    pre2.rel = "preconnect"; pre2.href = "https://fonts.gstatic.com"; pre2.crossOrigin = "";
+    var css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Onest:wght@400;500;600&display=swap";
+    document.head.appendChild(pre1);
+    document.head.appendChild(pre2);
+    document.head.appendChild(css);
+  })();
+}
 irenaCheckAccess().then(ok => { if (ok) init(); });
 </script>
 
