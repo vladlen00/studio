@@ -21,20 +21,30 @@
   var START_ROUTES = {
     dolgaya: "/dolgaya/?v=1",
   };
+  // Переход в мини-апп из списка в том же окне. Им же пользуются плитки студии
+  // (studioOpenRoute), поэтому плитке не нужен свой short-name в BotFather.
+  function go(name) {
+    if (!Object.prototype.hasOwnProperty.call(START_ROUTES, name)) return false;
+    var target = new URL(START_ROUTES[name], location.origin);
+    if (target.origin !== location.origin) return false;
+    target.searchParams.set("from", "studio");
+    // Точный адрес студии (с её ?v=) для кнопки «назад» в мини-аппе. На историю браузера
+    // не полагаемся: переход во время загрузки браузер может записать как замену.
+    sessionStorage.setItem("studio_return_url", location.pathname + location.search);
+    location.href = target.pathname + target.search + location.hash;
+    return true;
+  }
+  window.studioOpenRoute = function (name) {
+    try { return go(name); } catch (e) { return false; }
+  };
   try {
     var tg = window.Telegram && window.Telegram.WebApp;
     var name = tg && tg.initData && tg.initDataUnsafe && tg.initDataUnsafe.start_param;
     if (!name || !Object.prototype.hasOwnProperty.call(START_ROUTES, name)) return;
     var DONE_KEY = "studio_start_route_done";
     if (sessionStorage.getItem(DONE_KEY) === name) return;
-    var target = new URL(START_ROUTES[name], location.origin);
-    if (target.origin !== location.origin) return;
-    target.searchParams.set("from", "studio");
     sessionStorage.setItem(DONE_KEY, name);
-    // Точный адрес студии (с её ?v=) для кнопки «назад» в мини-аппе. На историю браузера
-    // не полагаемся: переход во время загрузки браузер может записать как замену.
-    sessionStorage.setItem("studio_return_url", location.pathname + location.search);
-    location.href = target.pathname + target.search + location.hash;
+    go(name);
   } catch (e) { /* любой сбой: остаёмся в студии */ }
 })();
 </script>
@@ -554,6 +564,7 @@ html, body {
 .tool-mini.tool-purple  { --tool-accent: rgba(192,132,252,0.6); }
 .tool-mini.tool-pink    { --tool-accent: rgba(232,165,160,0.6); }
 .tool-mini.tool-magenta { --tool-accent: rgba(244,114,182,0.65); }
+.tool-mini.tool-wine    { --tool-accent: rgba(201,143,137,0.65); }
 .tool-mini.tool-soon { --tool-accent: rgba(168,162,178,0.5); border-style: dashed; cursor: default; }
 .tool-mini.tool-soon .tool-mini-name { color: rgba(210,205,220,0.65); }
 .tool-soon-badge { position:absolute; top:6px; right:6px; background:rgba(124,77,255,0.28); color:#c8aef0; font-family:'Raleway'; font-size:11px; padding:1px 7px; border-radius:8px; z-index:2; }
@@ -886,10 +897,9 @@ html.is-web .content { flex: none; overflow: visible; }
         <div class="tool-mini-icon">🔥</div>
         <div class="tool-mini-name">Биохак ягодиц</div>
       </div>
-      <div class="tool-mini tool-soon">
-        <span class="tool-soon-badge">скоро</span>
-        <div class="tool-mini-icon">🍽️</div>
-        <div class="tool-mini-name">Тарелка</div>
+      <div class="tool-mini tool-wine" onclick="studioOpenRoute('dolgaya')">
+        <div class="tool-mini-icon">💞</div>
+        <div class="tool-mini-name">Игра в долгую</div>
       </div>
     </div>
   </div>
