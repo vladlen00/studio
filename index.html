@@ -5,6 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Студия практик - irena.bio</title>
 <script src="telegram-web-app.js"></script>
+<script>
+// ВХОДНАЯ ДВЕРЬ для мини-аппов сверх лимита BotFather (20 short-name заняты).
+// Ссылка t.me/relax2000_bot/studio?startapp=<имя> открывает студию, а студия в ТОМ ЖЕ
+// окне уходит на страницу мини-аппа из списка ниже. Новый мини-апп = одна строка здесь.
+//
+// Вход переносится двумя путями сразу: hash запуска (tgWebAppData и остальное) едет
+// в адресе, а SDK Телеграма ещё и сам хранит параметры запуска в sessionStorage
+// нашего origin. Поэтому цель обязана лежать на vladlen00.github.io.
+//
+// Чисто добавочно: нет initData (веб), нет start_param или имени нет в списке ->
+// ничего не делаем, студия работает как раньше. Переход один раз за запуск: кнопка
+// «назад» из мини-аппа возвращает в студию и обратно не уводит.
+(function () {
+  var START_ROUTES = {
+    dolgaya: "/dolgaya/?v=1",
+  };
+  try {
+    var tg = window.Telegram && window.Telegram.WebApp;
+    var name = tg && tg.initData && tg.initDataUnsafe && tg.initDataUnsafe.start_param;
+    if (!name || !Object.prototype.hasOwnProperty.call(START_ROUTES, name)) return;
+    var DONE_KEY = "studio_start_route_done";
+    if (sessionStorage.getItem(DONE_KEY) === name) return;
+    var target = new URL(START_ROUTES[name], location.origin);
+    if (target.origin !== location.origin) return;
+    target.searchParams.set("from", "studio");
+    sessionStorage.setItem(DONE_KEY, name);
+    // Точный адрес студии (с её ?v=) для кнопки «назад» в мини-аппе. На историю браузера
+    // не полагаемся: переход во время загрузки браузер может записать как замену.
+    sessionStorage.setItem("studio_return_url", location.pathname + location.search);
+    location.href = target.pathname + target.search + location.hash;
+  } catch (e) { /* любой сбой: остаёмся в студии */ }
+})();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
