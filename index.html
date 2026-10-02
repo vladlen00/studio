@@ -2,6 +2,33 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<!-- ВОЗВРАТ НА ПЛАТФОРМУ (02.10.2026, только веб). app.irenabio.com открывает практику с
+     #irena_token=...&irena_return=<адрес>, метка внутри дня - с адресом этого дня. Адрес
+     запоминаем в sessionStorage по ключу аппа и снимаем из адресной строки.
+     Вход с токеном БЕЗ адреса не трогает сохранённый: так медитации возвращаются в студию,
+     и цепочка «день -> студия -> медитация -> студия -> назад» не теряет день. Платформа
+     при входе в студию с дома всегда передаёт адрес дома.
+     Принимаем только https://app.irenabio.com/. В Телеграме токена в хэше нет - no-op. -->
+<script>
+(function () {
+  try {
+    var raw = (location.hash || "").replace(/^#/, "");
+    if (!raw) return;
+    var p = new URLSearchParams(raw);
+    if (!p.get("irena_token")) return;
+    var key = "irena_return:" + location.pathname.split("/")[1];
+    var r = p.get("irena_return") || "";
+    if (r.indexOf("https://app.irenabio.com/") === 0) sessionStorage.setItem(key, r);
+    if (p.has("irena_return")) {
+      p.delete("irena_return");
+      history.replaceState(null, "", location.pathname + location.search + "#" + p.toString());
+    }
+  } catch (e) {}
+})();
+function irenaReturnUrl() {
+  try { return sessionStorage.getItem("irena_return:" + location.pathname.split("/")[1]) || ""; } catch (e) { return ""; }
+}
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Студия практик - irena.bio</title>
 <script src="telegram-web-app.js"></script>
@@ -862,6 +889,7 @@ html.is-web .content { flex: none; overflow: visible; }
 
 <div class="app">
   <a id="appBackBtn" href="https://app.irenabio.com" class="app-back">← В приложение</a>
+  <script>(function () { var r = irenaReturnUrl(); if (r) document.getElementById("appBackBtn").href = r; })();</script>
   <div class="header">
     <div class="header-title">Студия практик от Ирены</div>
   </div>
