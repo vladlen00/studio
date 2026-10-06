@@ -945,19 +945,35 @@ html.is-web .content { flex: none; overflow: visible; }
     <!-- МЕДИТАЦИИ -->
     <div class="panel active" id="panel-meditations">
       <div class="section-label">Практики с голосом Ирены</div>
-      <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/sensuality')">
-        <div class="track-icon">🫧</div>
+      <div class="track-item" onclick="openRouteTile('love')">
+        <div class="track-icon">🌹</div>
         <div class="track-info">
-          <div class="track-name">Медитация чувственности</div>
-          <div class="track-desc">Про тело · 14 мин</div>
+          <div class="track-name">Медитация счастливых отношений</div>
+          <div class="track-desc">Про отношения · 11 мин</div>
         </div>
         <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
       <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/morning')">
         <div class="track-icon">🌤️</div>
         <div class="track-info">
-          <div class="track-name">Утро на своей стороне</div>
-          <div class="track-desc">Настройка · 4 мин</div>
+          <div class="track-name">Настройка на день</div>
+          <div class="track-desc">Утро · 4 мин</div>
+        </div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
+      </div>
+      <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/control')">
+        <div class="track-icon">🌊</div>
+        <div class="track-info">
+          <div class="track-name">Отпускание контроля</div>
+          <div class="track-desc">Про контроль · 16 мин</div>
+        </div>
+        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
+      </div>
+      <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/sensuality')">
+        <div class="track-icon">🫧</div>
+        <div class="track-info">
+          <div class="track-name">Медитация чувственности</div>
+          <div class="track-desc">Про тело · 14 мин</div>
         </div>
         <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
@@ -1030,14 +1046,6 @@ html.is-web .content { flex: none; overflow: visible; }
         <div class="track-info">
           <div class="track-name">Горит внутри</div>
           <div class="track-desc">Активная · 16 мин</div>
-        </div>
-        <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
-      </div>
-      <div class="track-item" onclick="openApp('https://t.me/relax2000_bot/control')">
-        <div class="track-icon">🌊</div>
-        <div class="track-info">
-          <div class="track-name">Отпускание контроля</div>
-          <div class="track-desc">Про контроль · 16 мин</div>
         </div>
         <div class="track-play"><svg viewBox="0 0 24 24" width="12" height="14" fill="#fff"><polygon points="8,5 8,19 20,12"/></svg></div>
       </div>
@@ -1617,10 +1625,11 @@ const RELAX_WEB_APPS = {
   mito:         { url: "https://vladlen00.github.io/mitochondria-meditation/", v: "1" },
   ideal:        { url: "https://vladlen00.github.io/ideal-reality/",      v: "2" },
   slim:         { url: "https://vladlen00.github.io/slim-meditation/",    v: "2" },
-  burning:      { url: "https://vladlen00.github.io/burning-meditation/", v: "1" },
-  control:      { url: "https://vladlen00.github.io/control-meditation/", v: "1" },
-  morning:      { url: "https://vladlen00.github.io/morning-meditation/", v: "1" },
+  burning:      { url: "https://vladlen00.github.io/burning-meditation/", v: "2" },
+  control:      { url: "https://vladlen00.github.io/control-meditation/", v: "2" },
+  morning:      { url: "https://vladlen00.github.io/morning-meditation/", v: "2" },
   sensuality:   { url: "https://vladlen00.github.io/sensuality-meditation/", v: "1" },
+  love:         { url: "https://vladlen00.github.io/love-meditation/", v: "2" },
 };
 // Веб-цель по t.me-URL: форвардим свой irena_token дальше (у studio нет сессии -> mint не зовём).
 function relaxWebTarget(tmeUrl) {
@@ -1640,6 +1649,13 @@ function openApp(url) {
   // иначе no-op (медитации помечены "скоро" и некликабельны, tools скрыты).
   var web = relaxWebTarget(url);
   if (web) location.href = web;
+}
+// Плитка мини-аппа без своего слота в BotFather: в ТГ переход в том же окне через START_ROUTES,
+// на вебе тот же путь, что у остальных плиток (RELAX_WEB_APPS). Отказ перехода в ТГ не молчит.
+function openRouteTile(name) {
+  if (irenaIsWeb()) { openApp('https://t.me/relax2000_bot/' + name); return; }
+  if (window.studioOpenRoute && window.studioOpenRoute(name)) return;
+  try { window.Telegram.WebApp.showAlert('Не получилось открыть, попробуй ещё раз'); } catch (e) {}
 }
 
 // Picker
