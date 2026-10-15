@@ -226,6 +226,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
     else if (a === "templates") go("templates");
     else if (a === "howto") go("howto");
     else if (a === "rules") openRules();
+    else if (a === "terms") location.href = "rules.html?v=1";   // в том же окне; «Назад» на rules.html вернёт сюда
     else if (a === "save") saveStory(+b.getAttribute("data-n"));
     else if (a === "pay") { var url = plain(b.getAttribute("data-link")); askWriteAccess(function () { openAny(url); }); }
     else if (a === "studio") toStudio();
@@ -235,6 +236,8 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   function topBar(labelKey, act) {
     return '<div class="top"><button class="back" type="button" data-act="' + act + '" aria-label="Назад">' + ICON.back + '</button><div class="top-label">' + T(labelKey) + "</div></div>";
   }
+  // «Условия программы» (15.10.2026): отдельная страница rules.html вместо шторки «Все правила».
+  function termsLabel() { return plain("common.terms_link") ? T("common.terms_link") : "Условия программы"; }
   function renderMain() {
     var r = DATA.reward === "money" ? "money" : "month";
     var c = DATA.counters || { clicked: 0, joined: 0, gifted: 0 };
@@ -259,7 +262,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
           '<div><div class="cnt-n">' + c.joined + '</div><div class="cnt-l">' + T("main.count_joined") + "</div></div>" +
           '<div><div class="cnt-n acc">' + c.gifted + '</div><div class="cnt-l">' + T("main.count_gifted_" + r) + "</div></div>" +
         "</div>" + next + "</div>" +
-      '<p class="fine">' + T("main.rules_short") + ' <button type="button" data-act="rules">' + T("main.rules_link") + "</button></p>";
+      '<p class="fine">' + T("main.rules_short") + ' <button type="button" data-act="terms">' + termsLabel() + "</button></p>";
   }
   function storyUrl(n, thumb) {
     return "stories/story" + n + (thumb ? "-thumb" : "") + ".png?v=" + encodeURIComponent(plain("story.version") || "1");
@@ -312,7 +315,8 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
         '<div class="feat">' + ICON.chat + "<div>" + T("friend.feature3") + "</div></div>" +
         '<div class="feat">' + ICON.drop + "<div>" + T("friend.feature4") + "</div></div></div>" +
       gift +
-      '<div style="display:flex;flex-direction:column;gap:10px"><div class="price">' + T("friend.price") + "</div>" + pay + "</div>";
+      '<div style="display:flex;flex-direction:column;gap:10px"><div class="price">' + T("friend.price") + "</div>" + pay + "</div>" +
+      '<p class="fine" style="text-align:center"><button type="button" data-act="terms">' + termsLabel() + "</button></p>";
   }
   function message(key, withStudio) {
     document.getElementById("s-message").innerHTML = '<div class="center"><div>' + T(key) + "</div>" +
