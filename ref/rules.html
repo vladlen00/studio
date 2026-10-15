@@ -172,7 +172,8 @@ li:target .n{background:var(--accent);color:#fff}
   render();   // сразу текст из файла, потом подменяем свежим из базы
   fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "rules" }) })
     .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (d) { if (d && d.texts) { TX = d.texts; render(); } })
+    // Книга рецептов в подарке (gift.file4_url заполнен) -> пункт 11 в варианте с книгой.
+    .then(function (d) { if (d && d.texts) { TX = d.texts; if (d.book && TX["rules.p11_book"]) TX["rules.p11"] = TX["rules.p11_book"]; render(); } })
     .catch(function () { /* остаёмся на тексте из файла */ });
 })();
 </script>
