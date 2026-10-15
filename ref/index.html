@@ -211,6 +211,9 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   }
   function toStudio() {
     var url = "../"; try { url = sessionStorage.getItem("studio_return_url") || "../"; } catch (e) {}
+    // Кнопка «Назад» Телеграма живёт в клиенте, а не на странице: не спрятать её здесь, и в студии
+    // вместо «Закрыть» останется мёртвая «Назад» (тест 15.10). Студия её не трогает.
+    if (tg && tg.BackButton) { try { tg.BackButton.offClick(back); tg.BackButton.hide(); } catch (e) {} }
     location.replace(url);
   }
   function syncBack() {
@@ -320,8 +323,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
         '<div class="feat">' + ICON.headphones + "<div>" + T("friend.feature4") + "</div></div></div>" +
       gift +
       '<div style="display:flex;flex-direction:column;gap:10px"><div class="price">' + T("friend.price") +
-        (plain("friend.refund_note") ? "<br>" + T("friend.refund_note") : "") + "</div>" + pay + "</div>" +
-      '<p class="fine" style="text-align:center"><button type="button" data-act="terms">' + termsLabel() + "</button></p>";
+        (plain("friend.refund_note") ? "<br>" + T("friend.refund_note") : "") + "</div>" + pay + "</div>";
   }
   function message(key, withStudio) {
     document.getElementById("s-message").innerHTML = '<div class="center"><div>' + T(key) + "</div>" +
