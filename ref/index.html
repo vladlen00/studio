@@ -385,6 +385,11 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
       TX = { "common.error": "Не получилось загрузить. Проверь интернет и открой ещё раз." };
       message("common.error"); return;
     }
+    // Выключатель программы на сервере (REFERRAL_ENABLED=off): без деплоя и без кэша Телеграма.
+    if (DATA.state === "paused") {
+      if (!TX["common.paused"]) TX["common.paused"] = "Программа на паузе, скоро вернёмся 💜";
+      message("common.paused", !isFriend); return;
+    }
     if (isFriend) {
       if (DATA.state === "friend") { renderFriend(); stack = ["friend"]; show("friend"); }
       else if (DATA.state === "prior_payer") { DATA.gift = false; renderFriend(); stack = ["friend"]; show("friend"); }
