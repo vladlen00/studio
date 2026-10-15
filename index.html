@@ -68,6 +68,19 @@ function irenaReturnUrl() {
   try {
     var tg = window.Telegram && window.Telegram.WebApp;
     var name = tg && tg.initData && tg.initDataUnsafe && tg.initDataUnsafe.start_param;
+    // ВОРОТА 1 «Приведи подругу» (15.10.2026): ссылка подруги startapp=ref_<код> и скрытая дверь
+    // участницы startapp=refhome -> экран ref/ в том же окне. Отдельная ветка: любой другой
+    // start_param идёт ровно как раньше, сбой внутри ветки -> обычная студия (и её проверка доступа).
+    if (name && (name === "refhome" || /^ref_[a-z0-9]{6,16}$/.test(name))) {
+      try {
+        if (sessionStorage.getItem("studio_start_route_done") !== name) {
+          sessionStorage.setItem("studio_start_route_done", name);   // «Открыть студию» из ref/ не уведёт обратно
+          sessionStorage.setItem("studio_return_url", location.pathname + location.search);
+          location.href = new URL("ref/", location.href).pathname + "?v=2" + location.hash;
+          return;
+        }
+      } catch (e) { /* обычный путь */ }
+    }
     if (!name || !Object.prototype.hasOwnProperty.call(START_ROUTES, name)) return;
     var DONE_KEY = "studio_start_route_done";
     if (sessionStorage.getItem(DONE_KEY) === name) return;
