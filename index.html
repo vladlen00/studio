@@ -65,6 +65,15 @@ function irenaReturnUrl() {
   window.studioOpenRoute = function (name) {
     try { return go(name); } catch (e) { return false; }
   };
+  // ВОРОТА 2 «Приведи подругу» (16.10.2026): плитка ведёт на экран участницы ref/ в том же окне,
+  // как скрытая дверь refhome. home=1: экран участницы, даже если студию открыли по ссылке подруги.
+  window.studioOpenRefHome = function () {
+    try {
+      sessionStorage.setItem("studio_return_url", location.pathname + location.search);
+      location.href = new URL("ref/", location.href).pathname + "?v=3&home=1" + location.hash;
+      return true;
+    } catch (e) { return false; }
+  };
   try {
     var tg = window.Telegram && window.Telegram.WebApp;
     var name = tg && tg.initData && tg.initDataUnsafe && tg.initDataUnsafe.start_param;
@@ -76,7 +85,7 @@ function irenaReturnUrl() {
         if (sessionStorage.getItem("studio_start_route_done") !== name) {
           sessionStorage.setItem("studio_start_route_done", name);   // «Открыть студию» из ref/ не уведёт обратно
           sessionStorage.setItem("studio_return_url", location.pathname + location.search);
-          location.href = new URL("ref/", location.href).pathname + "?v=2" + location.hash;
+          location.href = new URL("ref/", location.href).pathname + "?v=3" + location.hash;
           return;
         }
       } catch (e) { /* обычный путь */ }
@@ -606,6 +615,20 @@ html, body {
 .tool-mini.tool-pink    { --tool-accent: rgba(232,165,160,0.6); }
 .tool-mini.tool-magenta { --tool-accent: rgba(244,114,182,0.65); }
 .tool-mini.tool-wine    { --tool-accent: rgba(201,143,137,0.65); }
+/* ВОРОТА 2: баннер «Приведи подругу» под плитками (вариант Б, решение Владлена 16.10) */
+.ref-banner { position: relative; overflow: hidden; display: flex; align-items: center; gap: 12px; margin-top: 10px;
+  padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(250,204,21,0.28); border-radius: 14px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ref-banner::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.22;
+  background: radial-gradient(circle at 100% 0%, rgba(250,204,21,0.6), transparent 60%); }
+.ref-banner:active { background: rgba(100,60,220,0.12); }
+.ref-banner[hidden] { display: none; }   /* display:flex выше перебил бы атрибут hidden */
+.ref-banner-icon { position: relative; width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; display: flex;
+  align-items: center; justify-content: center; font-size: 1.1rem; background: rgba(250,204,21,0.15); border: 1px solid rgba(250,204,21,0.3); }
+.ref-banner-text { position: relative; flex: 1; min-width: 0; }
+.ref-banner-title { font-family: 'Raleway', sans-serif; font-weight: 500; font-size: 14px; color: rgba(220,210,255,0.95); }
+.ref-banner-sub { font-family: 'Raleway', sans-serif; font-size: 12px; color: rgba(200,190,230,0.6); margin-top: 2px; }
+.ref-banner-arrow { position: relative; font-size: 20px; color: rgba(220,210,255,0.5); }
 .tool-mini.tool-soon { --tool-accent: rgba(168,162,178,0.5); border-style: dashed; cursor: default; }
 .tool-mini.tool-soon .tool-mini-name { color: rgba(210,205,220,0.65); }
 .tool-soon-badge { position:absolute; top:6px; right:6px; background:rgba(124,77,255,0.28); color:#c8aef0; font-family:'Raleway'; font-size:11px; padding:1px 7px; border-radius:8px; z-index:2; }
@@ -943,6 +966,15 @@ html.is-web .content { flex: none; overflow: visible; }
         <div class="tool-mini-icon">💞</div>
         <div class="tool-mini-name">Игра в долгую</div>
       </div>
+    </div>
+    <!-- ВОРОТА 2: скрыт, пока сервер не ответит tile:true (секрет REFERRAL_TILE). -->
+    <div class="ref-banner" id="refTile" hidden onclick="openRefHome()">
+      <div class="ref-banner-icon">🎁</div>
+      <div class="ref-banner-text">
+        <div class="ref-banner-title">Приведи подругу</div>
+        <div class="ref-banner-sub">Подарок тебе за каждую подругу</div>
+      </div>
+      <div class="ref-banner-arrow">›</div>
     </div>
   </div>
 
@@ -1359,7 +1391,7 @@ function irenaShowBlocked(reason) {
     overlay.innerHTML = `
     <div style="font-size:64px;margin-bottom:24px;">🔒</div>
     <div style="font-size:22px;font-weight:700;margin-bottom:12px;">Доступ закрыт</div>
-    <div style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.7);margin-bottom:32px;max-width:340px;">Студия практик доступна только участницам клуба Ирены Пол. Для получения доступа перейди в бот и оформи подписку.</div>
+    <div style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.7);margin-bottom:32px;max-width:340px;">Студия практик доступна только участницам клуба «Женский Биохакинг». Для получения доступа перейди в бот и оформи подписку.</div>
     <a href="${ctaHref}" ${ctaTarget} style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:14px;font-size:15px;font-weight:600;text-decoration:none;">${ctaText}</a>
     ${reason ? `<div style="position:absolute;bottom:12px;left:0;right:0;font-size:10px;color:rgba(255,255,255,0.15);text-align:center;">${reason}</div>` : ''}
     `;
@@ -1670,6 +1702,10 @@ function openRouteTile(name) {
   if (window.studioOpenRoute && window.studioOpenRoute(name)) return;
   try { window.Telegram.WebApp.showAlert('Не получилось открыть, попробуй ещё раз'); } catch (e) {}
 }
+function openRefHome() {
+  if (window.studioOpenRefHome && window.studioOpenRefHome()) return;
+  try { window.Telegram.WebApp.showAlert('Не получилось открыть, попробуй ещё раз'); } catch (e) {}
+}
 
 // Picker
 const minuteCol = document.getElementById('minuteCol');
@@ -1889,6 +1925,32 @@ if (irenaIsWeb()) (function () {
 })();
 
 irenaCheckAccess().then(ok => { if (ok) init(); });
+
+// ВОРОТА 2 «Приведи подругу» (16.10.2026): баннер под плитками за выключателем на сервере (секрет REFERRAL_TILE).
+// Только телеграм. Ни отрисовка, ни проверка доступа запроса не ждут. Ответ tile:true в пределах
+// 2 с -> плитка появляется; ошибка, тайм-аут, off, веб -> студия ровно как раньше.
+// Оба адреса сразу: где supabase.co недоступен без VPN, отвечает прокси. text/plain = без preflight.
+(function refTileFlag() {
+  try {
+    if (irenaIsWeb() || !window.fetch) return;
+    var URLS = ["https://kjzxrpwqyyjcykwbqskn.supabase.co/functions/v1/referral-api",
+                "https://biohack-tracker-blond.vercel.app/sb/functions/v1/referral-api"];
+    var deadline = Date.now() + 2000;
+    function show() {
+      if (Date.now() > deadline) return;
+      var el = document.getElementById("refTile");
+      if (el) el.hidden = false;      // нет элемента: экран отказа доступа уже заменил страницу
+    }
+    URLS.forEach(function (u) {
+      var ctl = window.AbortController ? new AbortController() : null;
+      if (ctl) setTimeout(function () { try { ctl.abort(); } catch (e) {} }, 2000);
+      fetch(u, { method: "POST", body: '{"action":"tile"}', cache: "no-store", signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d && d.tile === true) show(); })
+        .catch(function () {});
+    });
+  } catch (e) {}
+})();
 </script>
 
 <style>

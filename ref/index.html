@@ -387,7 +387,9 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
       try { tg.BackButton.onClick(back); } catch (e) {}
     }
     var sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param;
-    var isFriend = DEMO ? /^(friend|nogift|already|self|bad)$/.test(DEMO) : /^ref_/.test(sp || "");
+    // home=1 - вход с плитки студии (ворота 2): всегда экран участницы, даже если студию открыли по ref_.
+    var home = new URLSearchParams(location.search).get("home") === "1";
+    var isFriend = DEMO ? /^(friend|nogift|already|self|bad)$/.test(DEMO) : /^ref_/.test(sp || "") && !home;
     if (!DEMO && !(tg && tg.initData)) { TX = {}; message("common.error"); document.querySelector("#s-message .center div").textContent = "Открой эту страницу в Телеграме."; return; }
     try {
       DATA = await call(isFriend ? "open" : "me");
