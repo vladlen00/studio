@@ -1317,6 +1317,9 @@ const IRENA_VERIFY_URL = "https://kjzxrpwqyyjcykwbqskn.supabase.co/functions/v1/
 const IRENA_TOKEN_KEY = "irena_access_token";
 const IRENA_TOKEN_EXPIRES_KEY = "irena_access_token_expires_at";
 const IRENA_SUBSCRIBE_URL = "https://t.me/Biochakirena_bot";
+// Экран «Доступ закрыт» в ТГ: те же две оплаты, что на экране подруги (referral_texts link.pay_card / link.pay_rub).
+const IRENA_PAY_CARD_URL = "https://t.me/Biochakirena_bot?start=kxd5Hoy4rFKSkrJm";
+const IRENA_PAY_RUB_URL = "https://t.me/tribute/app?startapp=sPKO";
 // Фолбэк-прокси на verify-access через biohack (Vercel rewrite /sb -> supabase).
 // АБСОЛЮТНЫЙ URL: github.io своего /sb не имеет, относительный путь сюда копировать нельзя.
 const VERIFY_URL_PROXY = "https://biohack-tracker-blond.vercel.app/sb/functions/v1/verify-access";
@@ -1387,15 +1390,32 @@ function irenaShowBlocked(reason) {
     const isWebCtx = !irenaGetInitData();
     const ctaHref = isWebCtx ? IRENA_WEB_APP_URL : IRENA_SUBSCRIBE_URL;
     const ctaText = isWebCtx ? "Открыть приложение" : "Оформить подписку";
-    const ctaTarget = isWebCtx ? "" : 'target="_blank" rel="noopener"';
+    // ТГ (16.10.2026): две оплаты, как на экране подруги и в relax-bot. Бот оплаты БЕЗ параметра у тех,
+    // кто уже жал там «Старт», открывал старый чат без тарифа; с ?start= тариф приходит заново.
+    const lead = isWebCtx
+      ? "Студия практик доступна только участницам клуба «Женский Биохакинг». Для получения доступа перейди в бот и оформи подписку."
+      : "Студия практик доступна только участницам клуба «Женский Биохакинг». Чтобы получить доступ, вступи в клуб по кнопке ниже 💜";
+    const btn = "display:block;width:100%;max-width:320px;box-sizing:border-box;padding:14px 20px;border:none;border-radius:14px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;";
+    const cta = isWebCtx
+      ? `<a href="${ctaHref}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:14px;font-size:15px;font-weight:600;text-decoration:none;">${ctaText}</a>`
+      : `<div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
+      <button type="button" data-tg="${IRENA_PAY_CARD_URL}" style="${btn}background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;">Вступить в клуб: оплата картой</button>
+      <button type="button" data-tg="${IRENA_PAY_RUB_URL}" style="${btn}background:rgba(255,255,255,0.08);color:#e0d8f0;border:1px solid rgba(255,255,255,0.18);">Оплатить в рублях или по СБП</button>
+    </div>`;
     overlay.innerHTML = `
     <div style="font-size:64px;margin-bottom:24px;">🔒</div>
     <div style="font-size:22px;font-weight:700;margin-bottom:12px;">Доступ закрыт</div>
-    <div style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.7);margin-bottom:32px;max-width:340px;">Студия практик доступна только участницам клуба «Женский Биохакинг». Для получения доступа перейди в бот и оформи подписку.</div>
-    <a href="${ctaHref}" ${ctaTarget} style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:14px;font-size:15px;font-weight:600;text-decoration:none;">${ctaText}</a>
+    <div style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.7);margin-bottom:32px;max-width:340px;">${lead}</div>
+    ${cta}
     ${reason ? `<div style="position:absolute;bottom:12px;left:0;right:0;font-size:10px;color:rgba(255,255,255,0.15);text-align:center;">${reason}</div>` : ''}
     `;
   }
+  overlay.querySelectorAll("[data-tg]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var u = b.getAttribute("data-tg");
+      try { window.Telegram.WebApp.openTelegramLink(u); } catch (e) { location.href = u; }
+    });
+  });
   document.body.appendChild(overlay);
 }
 
