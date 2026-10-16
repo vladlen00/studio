@@ -61,6 +61,13 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
 .thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .tpl-name{font-size:15px;line-height:1.3;min-height:2.6em}
 .tpl .btn{height:46px;font-size:15px}
+.tpl .btn.edit{height:40px;font-size:14px;border:0;background:var(--soft);color:var(--accent)}
+.ed-wrap{display:flex;justify-content:center}
+.ed-canvas{height:min(46vh,420px);aspect-ratio:9/16;border-radius:14px;box-shadow:0 2px 12px rgba(43,29,38,.18);background:var(--soft)}
+.ed-text{width:100%;min-height:132px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:16px/1.45 Onest,system-ui,sans-serif;color:var(--text);background:var(--card);resize:vertical}
+.ed-meta{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);margin-top:-6px}
+.ed-meta .bad{color:#B3261E}
+.btn:disabled{opacity:.45}
 .bottom{position:sticky;bottom:0;margin:0 -20px calc(-32px - env(safe-area-inset-bottom));background:var(--bg);padding:0 0 env(safe-area-inset-bottom)}
 .bottom .tip{display:flex;gap:12px;align-items:flex-start;background:var(--card);border-top:1px solid var(--line);padding:14px 20px;font-size:14px;line-height:1.5}
 .bottom .btn{border-radius:0;height:56px}
@@ -99,6 +106,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   <section class="screen" id="s-main" hidden></section>
   <section class="screen" id="s-templates" hidden></section>
   <section class="screen" id="s-howto" hidden></section>
+  <section class="screen" id="s-editor" hidden></section>
   <section class="screen" id="s-friend" hidden></section>
   <section class="screen" id="s-message" hidden></section>
 </main>
@@ -197,10 +205,11 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
 
   // ---------- навигация ----------
   function show(id) {
-    ["loading", "main", "templates", "howto", "friend", "message"].forEach(function (s) {
+    ["loading", "main", "templates", "howto", "friend", "message", "editor"].forEach(function (s) {
       document.getElementById("s-" + s).hidden = s !== id;
     });
     window.scrollTo(0, 0);
+    if (id === "templates") ownThumbs();
     syncBack();
   }
   function go(id) { stack.push(id); show(id); }
@@ -220,7 +229,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   function syncBack() {
     if (!tg || !tg.BackButton) return;
     var cur = stack[stack.length - 1];
-    var canBack = cur === "templates" || cur === "howto" || cur === "main" || !document.getElementById("rules").hidden || !document.getElementById("viewer").hidden;
+    var canBack = cur === "templates" || cur === "howto" || cur === "main" || cur === "editor" || !document.getElementById("rules").hidden || !document.getElementById("viewer").hidden;
     if (canBack) tg.BackButton.show(); else tg.BackButton.hide();
   }
   document.addEventListener("click", function (e) {
@@ -234,6 +243,9 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
     else if (a === "rules") openRules();
     else if (a === "terms") location.href = "rules.html?v=1";   // в том же окне; «Назад» на rules.html вернёт сюда
     else if (a === "save") saveStory(+b.getAttribute("data-n"));
+    else if (a === "edit") openEditor(+b.getAttribute("data-n"));
+    else if (a === "ed-save") saveOwn(ED.n);
+    else if (a === "ed-reset") resetOwn();
     else if (a === "pay") { var url = plain(b.getAttribute("data-link")); askWriteAccess(function () { openAny(url); }); }
     else if (a === "studio") toStudio();
   });
@@ -277,9 +289,10 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   function renderTemplates() {
     var items = "";
     for (var n = 1; n <= 6; n++) {
-      items += '<div class="tpl"><div class="thumb"><img loading="lazy" alt="" src="' + storyUrl(n, true) + '"></div>' +
+      items += '<div class="tpl"><div class="thumb"><img loading="lazy" alt="" data-thumb="' + n + '" src="' + storyUrl(n, true) + '"></div>' +
         '<div class="tpl-name">' + T("story." + n + ".name") + "</div>" +
-        '<button class="btn ghost" type="button" data-act="save" data-n="' + n + '">' + ICON.save + T("tpl.save") + "</button></div>";
+        '<button class="btn ghost" type="button" data-act="save" data-n="' + n + '">' + ICON.save + T("tpl.save") + "</button>" +
+        '<button class="btn edit" type="button" data-act="edit" data-n="' + n + '">✏️ Изменить текст</button></div>';
     }
     document.getElementById("s-templates").innerHTML =
       topBar("tpl.back", "back") +
@@ -346,6 +359,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   // Сохранить картинку: Telegram 8.0+ скачивает файл сам, раньше показываем картинку для долгого
   // нажатия. Ссылку копируем сразу: на экране «как добавить» обещано «она уже скопирована».
   function saveStory(n) {
+    if (ownGet(n) != null) { saveOwn(n); return; }   // свой текст: картинку рисуем на устройстве
     copyText(DATA.link);
     var abs = new URL(storyUrl(n, false), location.href).href;
     if (ver("8.0") && tg.downloadFile) {
@@ -359,6 +373,142 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
     v.hidden = false; syncBack();
   }
   document.querySelector("#viewer button").addEventListener("click", function () { document.getElementById("viewer").hidden = true; syncBack(); });
+
+  // ---------- свой текст в шаблоне сторис (16.10.2026) ----------
+  // Фон без основного текста (stories/storyN-bg.png) и рамка текста (stories/layout.json) - из
+  // render-stories.mjs. Основной текст рисуем сами на canvas: превью и сохранённая картинка - один и тот
+  // же canvas, поэтому совпадают. Свой текст живёт только в localStorage этого устройства, на сервер
+  // не уходит. Заголовок и строка над стикером запечены в фон и не меняются.
+  var OWN_MAX = 250;          // знаков: на самой тесной сторис (1 и 4) столько влезает минимальным кеглем
+  var MIN_PX = 34;            // минимальный кегль основного текста на картинке 1080x1920 (обычный 50)
+  var LAYOUT = null, BG = {}, ED = { n: 0, raf: 0 };
+  function ownKey(n) { return "ref_story_text_" + n; }
+  function ownGet(n) { try { var v = localStorage.getItem(ownKey(n)); return v != null && v.trim() ? v : null; } catch (e) { return null; } }
+  function ownSet(n, v) { try { if (v == null || v === plain("story." + n + ".body")) localStorage.removeItem(ownKey(n)); else localStorage.setItem(ownKey(n), v); } catch (e) {} }
+  function storyAsset(name) { return "stories/" + name + "?v=" + encodeURIComponent(plain("story.version") || "1"); }
+  function loadLayout() {
+    if (LAYOUT) return Promise.resolve(LAYOUT);
+    return fetch(storyAsset("layout.json")).then(function (r) { if (!r.ok) throw new Error("layout " + r.status); return r.json(); })
+      .then(function (j) { LAYOUT = j; return j; });
+  }
+  function loadBg(n) {
+    if (!BG[n]) BG[n] = new Promise(function (ok, bad) { var im = new Image(); im.onload = function () { ok(im); }; im.onerror = bad; im.src = storyAsset("story" + n + "-bg.png"); });
+    return BG[n];
+  }
+  // Перенос по словам с учётом своих переводов строк; слово длиннее строки режем по буквам (Array.from: эмодзи целиком).
+  function wrapLines(ctx, text, maxW) {
+    var out = [];
+    String(text).replace(/\r/g, "").split("\n").forEach(function (para) {
+      var words = para.split(/ +/), cur = "";
+      if (!para.trim()) { out.push(""); return; }
+      words.forEach(function (w) {
+        if (!w) return;
+        var t = cur ? cur + " " + w : w;
+        if (ctx.measureText(t).width <= maxW) { cur = t; return; }
+        if (cur) out.push(cur);
+        cur = "";
+        if (ctx.measureText(w).width <= maxW) { cur = w; return; }
+        Array.from(w).forEach(function (ch) { if (ctx.measureText(cur + ch).width > maxW && cur) { out.push(cur); cur = ch; } else cur += ch; });
+      });
+      if (cur) out.push(cur);
+    });
+    return out;
+  }
+  // Рисует сторис n с текстом text на canvas 1080x1920. Возвращает { fits, px }.
+  function drawStory(cv, n, text, bg) {
+    var L = LAYOUT[n], ctx = cv.getContext("2d");
+    cv.width = bg.naturalWidth; cv.height = bg.naturalHeight;
+    ctx.drawImage(bg, 0, 0);
+    var px = L.size, lines, lineH, room = L.bottom - L.y;
+    for (;;) {
+      ctx.font = "400 " + px + "px Onest, system-ui, sans-serif";
+      lines = wrapLines(ctx, text, L.w); lineH = px * L.lh;
+      if (lines.length * lineH <= room || px <= MIN_PX) break;
+      px -= 1;
+    }
+    var fits = lines.length * lineH <= room + 0.5;
+    ctx.fillStyle = L.color; ctx.textBaseline = "alphabetic";
+    var m = ctx.measureText("Ag"), asc = m.fontBoundingBoxAscent || px * 0.93, desc = m.fontBoundingBoxDescent || px * 0.24;
+    var shift = (lineH - (asc + desc)) / 2 + asc;     // как полу-интерлиньяж в HTML
+    lines.forEach(function (ln, i) { if (ln) ctx.fillText(ln, L.x, L.y + i * lineH + shift); });
+    return { fits: fits, px: px };
+  }
+  function prepare(n, text) {
+    return Promise.all([loadLayout(), loadBg(n), document.fonts && document.fonts.load ? document.fonts.load("400 50px Onest", text || "а") : null]);
+  }
+
+  function openEditor(n) {
+    ED.n = n;
+    var own = ownGet(n), text = own != null ? own : plain("story." + n + ".body");
+    document.getElementById("s-editor").innerHTML =
+      topBar("tpl.back", "back") +
+      '<div class="ed-wrap"><canvas class="ed-canvas" id="ed-cv" width="1080" height="1920" role="img" aria-label="' + esc(plain("story." + n + ".name")) + '"></canvas></div>' +
+      '<textarea class="ed-text" id="ed-tx" maxlength="' + OWN_MAX + '" rows="5"></textarea>' +
+      '<div class="ed-meta"><span id="ed-warn"></span><span id="ed-cnt"></span></div>' +
+      '<button class="btn" type="button" data-act="ed-save" id="ed-save">' + ICON.save + "Сохранить картинку</button>" +
+      '<button class="btn ghost" type="button" data-act="ed-reset">Вернуть текст Ирены</button>';
+    var tx = document.getElementById("ed-tx");
+    tx.value = text;
+    tx.addEventListener("input", function () { ownSet(n, tx.value); redraw(); });
+    go("editor");
+    prepare(n, text).then(redraw).catch(function () { document.getElementById("ed-warn").textContent = "Не получилось загрузить шаблон, проверь интернет"; });
+  }
+  function redraw() {
+    cancelAnimationFrame(ED.raf);
+    ED.raf = requestAnimationFrame(function () {
+      var tx = document.getElementById("ed-tx"), cv = document.getElementById("ed-cv");
+      if (!tx || !cv || !LAYOUT) return;
+      var n = ED.n, val = tx.value;
+      document.getElementById("ed-cnt").textContent = val.length + " / " + OWN_MAX;   // как maxlength поля
+      loadBg(n).then(function (bg) {
+        var r = drawStory(cv, n, val, bg), warn = document.getElementById("ed-warn");
+        warn.textContent = !val.trim() ? "Напиши хотя бы пару слов" : r.fits ? "" : "Не помещается: сократи текст или убери пустые строки";
+        warn.className = r.fits && val.trim() ? "" : "bad";
+        document.getElementById("ed-save").disabled = !r.fits || !val.trim();
+      });
+    });
+  }
+  function resetOwn() {
+    var tx = document.getElementById("ed-tx"); if (!tx) return;
+    tx.value = plain("story." + ED.n + ".body"); ownSet(ED.n, null); redraw();
+  }
+  // Своя картинка: системное «Поделиться» с файлом (сразу в Фото или Инстаграм), иначе картинка на весь
+  // экран для долгого нажатия. tg.downloadFile здесь не подходит: ему нужен https-адрес файла на сервере.
+  function saveOwn(n) {
+    var text = n === ED.n && document.getElementById("ed-tx") ? document.getElementById("ed-tx").value : ownGet(n);
+    if (text == null) { saveStory(n); return; }
+    copyText(DATA.link);
+    prepare(n, text).then(function (r) {
+      var cv = document.createElement("canvas"), res = drawStory(cv, n, text, r[1]);
+      if (!res.fits) { toast("Не помещается: сократи текст"); return; }
+      var url = cv.toDataURL("image/png"), name = "klub-ireny-" + n + ".png";
+      var showViewer = function () {
+        var v = document.getElementById("viewer");
+        v.querySelector("img").src = url; v.querySelector("p").innerHTML = T("common.save_fallback");
+        v.hidden = false; syncBack();
+      };
+      if (!cv.toBlob || !window.File || !navigator.canShare) { showViewer(); return; }
+      cv.toBlob(function (blob) {
+        try {
+          var file = new File([blob], name, { type: "image/png" });
+          if (!navigator.canShare({ files: [file] })) { showViewer(); return; }
+          navigator.share({ files: [file] }).then(function () { haptic(); }).catch(function (e) { if (!e || e.name !== "AbortError") showViewer(); });
+        } catch (e) { showViewer(); }
+      }, "image/png");
+    }).catch(function () { toast(T("common.error")); });
+  }
+  // Превью в сетке шаблонов: со своим текстом рисуем его, иначе готовая картинка с сервера.
+  function ownThumbs() {
+    for (var n = 1; n <= 6; n++) (function (n) {
+      var own = ownGet(n), img = document.querySelector('img[data-thumb="' + n + '"]');
+      if (own == null || !img) return;
+      prepare(n, own).then(function (r) {
+        var big = document.createElement("canvas"); drawStory(big, n, own, r[1]);
+        var cv = document.createElement("canvas"); cv.width = 360; cv.height = 640;
+        cv.getContext("2d").drawImage(big, 0, 0, 360, 640); img.src = cv.toDataURL("image/jpeg", 0.85);
+      }).catch(function () {});
+    })(n);
+  }
 
   // ---------- сервер ----------
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
