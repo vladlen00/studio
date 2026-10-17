@@ -291,13 +291,19 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   function storyUrl(n, thumb) {
     return "stories/story" + n + (thumb ? "-thumb" : "") + ".png?v=" + encodeURIComponent(plain("story.version") || "1");
   }
+  // Свою картинку отдаём только через «Поделиться» с файлом (saveOwn). Где его нет (Android WebView,
+  // Telegram Desktop), сохранить её нечем: кнопку редактора не показываем (решение 17.10.2026).
+  var CAN_SHARE_PNG = (function () {
+    try { return !!(window.File && navigator.canShare && navigator.canShare({ files: [new File([new Blob([""], { type: "image/png" })], "klub-ireny-1.png", { type: "image/png" })] })); }
+    catch (e) { return false; }
+  })();
   function renderTemplates() {
     var items = "";
     for (var n = 1; n <= 6; n++) {
       items += '<div class="tpl"><div class="thumb"><img loading="lazy" alt="" data-thumb="' + n + '" src="' + storyUrl(n, true) + '"></div>' +
         '<div class="tpl-name">' + T("story." + n + ".name") + "</div>" +
         '<button class="btn ghost" type="button" data-act="save" data-n="' + n + '">' + ICON.save + T("tpl.save") + "</button>" +
-        '<button class="btn edit" type="button" data-act="edit" data-n="' + n + '">✏️ Изменить текст</button></div>';
+        (CAN_SHARE_PNG ? '<button class="btn edit" type="button" data-act="edit" data-n="' + n + '">✏️ Изменить текст</button>' : "") + "</div>";
     }
     document.getElementById("s-templates").innerHTML =
       topBar("tpl.back", "back") +
