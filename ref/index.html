@@ -303,6 +303,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   // Системное «Поделиться» с файлом только на телефонах: в Telegram Desktop на Windows canShare = true, но
   // окно Windows «Share» не умеет сохранить на диск (17.10.2026). Остальным при downloadFile - через сервер.
   var PHONE = !!(tg && (tg.platform === "ios" || tg.platform === "android"));
+  var SHARE_PATH = CAN_SHARE_PNG && !(CAN_DOWNLOAD && !PHONE);
   function renderTemplates() {
     var items = "";
     for (var n = 1; n <= 6; n++) {
@@ -500,7 +501,26 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
     go("editor");
     prepare(n, text).then(redraw).catch(function () { document.getElementById("ed-warn").textContent = "Не получилось загрузить шаблон, проверь интернет"; });
   }
+  // iPhone (17.10.2026): iOS пускает navigator.share только прямо в обработчике нажатия. Раньше перед share
+  // шли prepare, отрисовка, toDataURL и toBlob, жест терялся (NotAllowedError) и открывался просмотр
+  // «удерживай»; со второго раза всё было в кэше и успевало. Теперь PNG собираем заранее: после каждой
+  // отрисовки в редакторе (с задержкой) и в превью сетки, а «Сохранить» отдаёт готовый File сразу.
+  var FILES = {}, FILE_T = 0;
+  function fileKey(n, text, cta) { return n + "|" + text.length + "|" + text + "|" + cta; }
+  function readyFile(cv, n, text, cta) {
+    if (!SHARE_PATH || !cv.toBlob || !window.File) return;
+    var key = fileKey(n, text, cta);
+    if (FILES[n] && FILES[n].key === key) return;
+    cv.toBlob(function (blob) {
+      if (blob) FILES[n] = { key: key, file: new File([blob], "klub-ireny-" + n + ".png", { type: "image/png" }) };
+    }, "image/png");
+  }
+  function readyFileLater(cv, n, text, cta) {
+    clearTimeout(FILE_T);
+    FILE_T = setTimeout(function () { readyFile(cv, n, text, cta); }, 400);
+  }
   function redraw() {
+    clearTimeout(FILE_T);
     cancelAnimationFrame(ED.raf);
     ED.raf = requestAnimationFrame(function () {
       var tx = document.getElementById("ed-tx"), ci = document.getElementById("ed-cta"), cv = document.getElementById("ed-cv");
@@ -513,6 +533,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
           : !r.bodyFits ? "Не помещается: сократи текст или убери пустые строки" : "";
         warn.className = r.fits && !empty ? "" : "bad";
         document.getElementById("ed-save").disabled = !r.fits || empty;
+        if (r.fits && !empty) readyFileLater(cv, n, val, cval);
       });
     });
   }
@@ -531,6 +552,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
     if (text == null) text = plain("story." + n + ".body");
     if (cta == null) cta = plain("story." + n + ".cta");
     copyText(DATA.link);
+    if (SHARE_PATH) { shareOwn(n, text, cta); return; }
     prepare(n, text).then(function (r) {
       var cv = document.createElement("canvas"), res = drawStory(cv, n, text, cta, r[1]);
       if (!res.fits) { toast("Не помещается: сократи текст"); return; }
@@ -540,16 +562,28 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
         v.querySelector("img").src = url; v.querySelector("p").innerHTML = T("common.save_fallback");
         v.hidden = false; syncBack();
       };
-      if (CAN_DOWNLOAD && (!CAN_SHARE_PNG || !PHONE)) { uploadOwn(n, url); return; }
-      if (!cv.toBlob || !window.File || !navigator.canShare) { showViewer(); return; }
-      cv.toBlob(function (blob) {
-        try {
-          var file = new File([blob], name, { type: "image/png" });
-          if (!navigator.canShare({ files: [file] })) { showViewer(); return; }
-          navigator.share({ files: [file] }).then(function () { haptic(); }).catch(function (e) { if (!e || e.name !== "AbortError") showViewer(); });
-        } catch (e) { showViewer(); }
-      }, "image/png");
+      if (CAN_DOWNLOAD) { uploadOwn(n, url); return; }
+      showViewer();   // ни share, ни downloadFile
     }).catch(function () { toast(T("common.error")); });
+  }
+  // Share без единого промиса до вызова: File уже собран (FILES). Не готов - собираем и просим нажать ещё раз.
+  function shareOwn(n, text, cta) {
+    var f = FILES[n] && FILES[n].key === fileKey(n, text, cta) ? FILES[n].file : null;
+    if (!f) {
+      toast("Готовлю картинку, нажми ещё раз через секунду");
+      prepare(n, text).then(function (r) {
+        var cv = document.createElement("canvas"), res = drawStory(cv, n, text, cta, r[1]);
+        if (!res.fits) { toast("Не помещается: сократи текст"); return; }
+        readyFile(cv, n, text, cta);
+      }).catch(function () { toast(T("common.error")); });
+      return;
+    }
+    try {
+      navigator.share({ files: [f] }).then(function () { haptic(); }).catch(function (e) {
+        if (e && e.name === "AbortError") return;   // сама закрыла меню
+        toast(e && e.name === "NotAllowedError" ? "Нажми «Сохранить картинку» ещё раз" : T("common.error"));
+      });
+    } catch (e) { toast(T("common.error")); }
   }
   // Android и Telegram Desktop: PNG на сервер (referral-api story_upload, приватный бакет, файл живёт час),
   // в ответ подписанный адрес на 10 минут -> tg.downloadFile. Адрес того же маршрута, каким дошёл запрос
@@ -575,7 +609,8 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
       if (!hasOwn(n) || !img) return;
       var own = ownGet(n) != null ? ownGet(n) : plain("story." + n + ".body"), cta = ctaGet(n) != null ? ctaGet(n) : plain("story." + n + ".cta");
       prepare(n, own).then(function (r) {
-        var big = document.createElement("canvas"); drawStory(big, n, own, cta, r[1]);
+        var big = document.createElement("canvas"), res = drawStory(big, n, own, cta, r[1]);
+        if (res.fits) readyFile(big, n, own, cta);
         var cv = document.createElement("canvas"); cv.width = 360; cv.height = 640;
         cv.getContext("2d").drawImage(big, 0, 0, 360, 640); img.src = cv.toDataURL("image/jpeg", 0.85);
       }).catch(function () {});
