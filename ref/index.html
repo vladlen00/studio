@@ -300,6 +300,9 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
   })();
   var CAN_DOWNLOAD = !!(ver("8.0") && tg && typeof tg.downloadFile === "function");
   var CAN_EDIT = CAN_SHARE_PNG || CAN_DOWNLOAD;
+  // Системное «Поделиться» с файлом только на телефонах: в Telegram Desktop на Windows canShare = true, но
+  // окно Windows «Share» не умеет сохранить на диск (17.10.2026). Остальным при downloadFile - через сервер.
+  var PHONE = !!(tg && (tg.platform === "ios" || tg.platform === "android"));
   function renderTemplates() {
     var items = "";
     for (var n = 1; n <= 6; n++) {
@@ -537,7 +540,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
         v.querySelector("img").src = url; v.querySelector("p").innerHTML = T("common.save_fallback");
         v.hidden = false; syncBack();
       };
-      if (!CAN_SHARE_PNG && CAN_DOWNLOAD) { uploadOwn(n, url); return; }
+      if (CAN_DOWNLOAD && (!CAN_SHARE_PNG || !PHONE)) { uploadOwn(n, url); return; }
       if (!cv.toBlob || !window.File || !navigator.canShare) { showViewer(); return; }
       cv.toBlob(function (blob) {
         try {
