@@ -310,7 +310,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
       '<div style="display:flex;flex-direction:column;gap:10px"><h1 class="sm">' + T("tpl.title") + '</h1><p class="lead" style="font-size:16px">' + T("tpl.subtitle") + "</p></div>" +
       '<div class="grid">' + items + "</div>" +
       '<div class="note">' + ICON.camera + "<div>" + T("tpl.photo_tip") + "</div></div>" +
-      '<div class="bottom"><div class="tip">' + ICON.pen + "<div>" + T("tpl.own_phrase_tip") + '</div></div><button class="btn" type="button" data-act="howto">' + T("tpl.howto_button") + " " + ICON.chev + "</button></div>";
+      '<div class="bottom">' + (CAN_SHARE_PNG ? '<div class="tip">' + ICON.pen + "<div>" + T("tpl.own_phrase_tip") + "</div></div>" : "") + '<button class="btn" type="button" data-act="howto">' + T("tpl.howto_button") + " " + ICON.chev + "</button></div>";
   }
   function renderHowto() {
     var sticker = plain("howto.sticker_text");
