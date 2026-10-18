@@ -253,6 +253,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
     else if (a === "ed-reset") resetOwn();
     else if (a === "pay") { var url = plain(b.getAttribute("data-link")); askWriteAccess(function () { openAny(url); }); }
     else if (a === "studio") toStudio();
+    else if (a === "home") openHome();
   });
 
   // ---------- экраны ----------
@@ -362,6 +363,26 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
     document.getElementById("s-message").innerHTML = '<div class="center"><div>' + T(key) + "</div>" +
       (withStudio ? '<button class="btn tall" type="button" data-act="studio">' + T("friend.open_studio") + "</button>" : "") + "</div>";
     stack = ["message"]; show("message");
+  }
+  // Участница открыла ссылку (18.10.2026): своя - friend.self, чужая - friend.already_member.
+  // «Позвать подругу» ведёт на её экран участницы (как refhome), «Открыть студию» - как раньше.
+  function memberMessage(key) {
+    document.getElementById("s-message").innerHTML = '<div class="center"><div>' + T(key) + "</div>" +
+      '<div style="display:flex;flex-direction:column;gap:10px">' +
+        '<button class="btn tall" type="button" data-act="home">' + T("friend.invite_friend") + "</button>" +
+        '<button class="btn tall ghost" type="button" data-act="studio">' + T("friend.open_studio") + "</button></div></div>";
+    stack = ["message"]; show("message");
+  }
+  async function openHome() {
+    show("loading");
+    try {
+      DATA = await call("me");
+      if (DATA.texts) TX = DATA.texts;
+    } catch (e) {
+      show("message"); toast(T("common.error")); return;
+    }
+    if (DATA.state === "paused") { message("common.paused", true); return; }
+    routeMember();
   }
   function openRules() {
     var el = document.getElementById("rules");
@@ -666,11 +687,14 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
     if (isFriend) {
       if (DATA.state === "friend") { renderFriend(); stack = ["friend"]; show("friend"); }
       else if (DATA.state === "prior_payer") { DATA.gift = false; renderFriend(); stack = ["friend"]; show("friend"); }
-      else if (DATA.state === "already_member") message("friend.already_member", true);
-      else if (DATA.state === "self") message("friend.self", true);
+      else if (DATA.state === "already_member") memberMessage("friend.already_member");
+      else if (DATA.state === "self") memberMessage("friend.self");
       else message("friend.bad_link");
       return;
     }
+    routeMember();
+  }
+  function routeMember() {
     if (DATA.state === "ok") {
       renderMain(); renderTemplates(); renderHowto();
       stack = ["main"]; show("main");
