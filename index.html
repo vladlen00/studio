@@ -746,12 +746,14 @@ body.is-web .web-sub {
 }
 
 /* --- вкладки: четыре равные колонки, без горизонтального скролла --- */
-body.is-web .tabs {
+body.is-web .tabs,
+body.tg-v2 .tabs {
   display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 6px; padding: 2px 20px 0;
   overflow: visible;                      /* был overflow-x: auto - скроллер уходит */
 }
-body.is-web .tab {
+body.is-web .tab,
+body.tg-v2 .tab {
   height: 44px; padding: 0 6px;
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 100px;
@@ -761,20 +763,24 @@ body.is-web .tab {
   font-family: 'Onest', system-ui, sans-serif;
   font-size: 13.5px; font-weight: 400; letter-spacing: normal;
 }
-body.is-web .tab.active {
+body.is-web .tab.active,
+body.tg-v2 .tab.active {
   color: var(--w-text);
   background: rgba(124, 92, 255, .20);
   border-color: rgba(124, 92, 255, .55);
 }
 
 /* --- список практик: без иконок, кнопка play обводкой --- */
-body.is-web .content { padding: 0 20px 40px; }
-body.is-web .section-label {
+body.is-web .content,
+body.tg-v2 .content { padding: 0 20px 40px; }
+body.is-web .section-label,
+body.tg-v2 .section-label {
   font-size: 11px; letter-spacing: .17em;
   color: var(--w-dim);
   margin: 26px 0 12px;
 }
-body.is-web .track-item {
+body.is-web .track-item,
+body.tg-v2 .track-item {
   padding: 15px 15px 15px 18px;
   gap: 14px; border-radius: 16px;
   background: var(--w-card);
@@ -782,38 +788,48 @@ body.is-web .track-item {
   margin-bottom: 9px;
 }
 body.is-web .track-item:hover,
-body.is-web .track-item:active { background: var(--w-card-hi); border-color: transparent; }
+body.is-web .track-item:active,
+body.tg-v2 .track-item:active { background: var(--w-card-hi); border-color: transparent; }
 /* ЭМОДЗИ ПРЯЧЕМ, А НЕ УДАЛЯЕМ: разметка общая с телеграмом, там иконки остаются. */
-body.is-web .track-icon { display: none; }
-body.is-web .track-name {
+body.is-web .track-icon,
+body.tg-v2 .track-icon { display: none; }
+body.is-web .track-name,
+body.tg-v2 .track-name {
   font-family: 'Onest', system-ui, sans-serif;
   font-weight: 400; font-size: 16px; letter-spacing: -.1px;
   color: var(--w-text); margin-bottom: 4px;
 }
-body.is-web .track-desc {
+body.is-web .track-desc,
+body.tg-v2 .track-desc {
   font-size: 12.5px; letter-spacing: normal;
   color: var(--w-dim); margin-top: 0;
 }
-body.is-web .track-play {
+body.is-web .track-play,
+body.tg-v2 .track-play {
   width: 44px; height: 44px;
   background: transparent;
   border: 1px solid rgba(242, 238, 246, .16);
 }
-body.is-web .track-play svg { width: 13px; height: 13px; fill: var(--w-text); }
-body.is-web .track-item:hover .track-play {
+body.is-web .track-play svg,
+body.tg-v2 .track-play svg { width: 13px; height: 13px; fill: var(--w-text); }
+body.is-web .track-item:hover .track-play,
+body.tg-v2 .track-item:hover .track-play {
   background: rgba(242, 238, 246, .06);
   border-color: rgba(242, 238, 246, .28);
 }
 
 /* --- музыка: номера остаются, играющая строка подсвечена --- */
 body.is-web .music-player { display: none; }     /* её роль берёт мини-бар */
-body.is-web .music-track-item {
+body.is-web .music-track-item,
+body.tg-v2 .music-track-item {
   padding: 14px 15px 14px 18px; gap: 14px;
   border-radius: 16px; margin-bottom: 9px;
   background: var(--w-card); border: 1px solid transparent;
 }
-body.is-web .music-track-item:hover { background: var(--w-card-hi); }
-body.is-web .music-track-item.active {
+body.is-web .music-track-item:hover,
+body.tg-v2 .music-track-item:hover { background: var(--w-card-hi); }
+body.is-web .music-track-item.active,
+body.tg-v2 .music-track-item.active {
   background: linear-gradient(100deg, rgba(124,92,255,.16), rgba(22,18,29,.95) 68%);
   border-color: rgba(124,92,255,.28);
 }
@@ -822,17 +838,21 @@ body.is-web .music-track-item.active {
    двух классов на перебивание не хватило бы. */
 body.is-web .music-track-playing,
 body.is-web .music-track-item.active .music-track-playing { display: none; }
-body.is-web .music-track-num {
+body.is-web .music-track-num,
+body.tg-v2 .music-track-num {
   width: 18px; font-family: 'Onest', system-ui, sans-serif;
   font-size: 12px; color: var(--w-dim);
 }
 body.is-web .music-track-item.active .music-track-num { display: block; color: var(--w-violet-soft); }
-body.is-web .music-track-name {
+body.is-web .music-track-name,
+body.tg-v2 .music-track-name {
   font-family: 'Onest', system-ui, sans-serif;
   font-size: 16px; font-weight: 400; color: var(--w-text);
 }
-body.is-web .music-track-item.active .music-track-name { color: var(--w-text); }
-body.is-web .music-track-desc { font-size: 12.5px; letter-spacing: normal; color: var(--w-dim); }
+body.is-web .music-track-item.active .music-track-name,
+body.tg-v2 .music-track-item.active .music-track-name { color: var(--w-text); }
+body.is-web .music-track-desc,
+body.tg-v2 .music-track-desc { font-size: 12.5px; letter-spacing: normal; color: var(--w-dim); }
 
 /* --- мини-бар --- */
 /* ГЕОМЕТРИЯ СКОПИРОВАНА ЦЕЛИКОМ с #mini-player приложения (irenabio-app/style.css:780).
@@ -917,9 +937,195 @@ body.is-web.has-web-mini { padding-bottom: calc(96px + env(safe-area-inset-botto
 html.is-web, html.is-web body { height: auto; min-height: 100%; overflow: visible; }
 html.is-web .app { height: auto; min-height: 100vh; }
 html.is-web .content { flex: none; overflow: visible; }
+
+/* ===== ТГ, НОВЫЙ ВИД (tg-v2, 19.10.2026): эталон design/mockup-studio-tg.html =====
+   Класс ставит скрипт в начале body (STUDIO_V2): только телеграм, только id из списка
+   или ?ui=2. Без класса ни одно правило ниже не срабатывает, старый вид и веб прежние.
+   Общие с вебом правила (вкладки, список практик, музыка) расширены селектором
+   body.tg-v2 прямо в блоке is-web; здесь только то, чего у веба нет. */
+.v2-home, .v2-sub { display: none; }
+html.tg-v2 {
+  --w-bg:#0A0711; --w-card:#16121D; --w-card-hi:#1B1526;
+  --w-violet:#7C5CFF; --w-violet-soft:#B49BD8;
+  --w-text:#F2EEF6; --w-muted:#9C93AB; --w-dim:#6E657C;
+  --w-line:rgba(242,238,246,.08);
+  background: var(--w-bg);
+}
+body.tg-v2 { background: var(--w-bg); color: var(--w-text); font-family: 'Onest', system-ui, -apple-system, sans-serif; }
+body.tg-v2 .bg { background: none; }
+/* Листается весь экран, а не только список: шапка с плитками выше половины экрана.
+   Скролл у .app, а не у body: в телеграме body остаётся неподвижным, как было. */
+body.tg-v2 .app { background: var(--w-bg); overflow-x: hidden; overflow-y: auto; scrollbar-width: none; }
+body.tg-v2 .app::-webkit-scrollbar { display: none; }
+body.tg-v2 .content { flex: none; overflow: visible; padding-bottom: 96px; }
+body.tg-v2 .header,
+body.tg-v2 .tools-section { display: none; }
+body.tg-v2 .v2-home { display: block; flex-shrink: 0; }
+
+/* --- герой: без overflow:hidden, низ волны уходит под карточку подружки --- */
+body.tg-v2 .v2-hero { position: relative; padding: 26px 20px 12px; }
+body.tg-v2 .v2-wave-wrap {
+  position: absolute; top: 0; right: -5.1%;
+  width: 68.5%; height: 0; padding-bottom: 51.1%;
+  pointer-events: none; user-select: none; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 52%, transparent 96%);
+          mask-image: linear-gradient(to bottom, #000 52%, transparent 96%);
+}
+body.tg-v2 .v2-wave {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: right center;
+  -webkit-mask-image: linear-gradient(to right, transparent 2%, #000 46%);
+          mask-image: linear-gradient(to right, transparent 2%, #000 46%);
+}
+body.tg-v2 .v2-h1 {
+  position: relative; margin: 0 0 12px;
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-weight: 500; font-size: 38px; line-height: 1.04; letter-spacing: -.57px;
+  color: var(--w-text);
+}
+body.tg-v2 .v2-h1 span { display: block; color: var(--w-violet-soft); }
+body.tg-v2 .v2-sub-text { position: relative; margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--w-muted); }
+
+/* --- всё ниже героя лежит поверх волны --- */
+body.tg-v2 .v2-stack { position: relative; padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
+body.tg-v2 .tabs, body.tg-v2 .content { position: relative; }
+
+body.tg-v2 .v2-ai {
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px 14px 14px; border: 0; border-radius: 20px;
+  text-align: left; cursor: pointer; font-family: inherit; color: #fff;
+  box-shadow: 0 14px 30px -16px rgba(0,0,0,.8);
+  background:
+    radial-gradient(52px 52px at 44px 50%, rgba(255,190,205,.42) 0%, rgba(255,190,205,0) 100%),
+    radial-gradient(70% 150% at 0% 15%, rgba(190,110,255,.55) 0%, rgba(190,110,255,0) 70%),
+    radial-gradient(60% 120% at 52% 115%, rgba(255,90,150,.45) 0%, rgba(255,90,150,0) 70%),
+    radial-gradient(65% 150% at 100% 25%, rgba(255,190,110,.55) 0%, rgba(255,190,110,0) 70%),
+    linear-gradient(100deg, #7B2E9E, #C63C74 52%, #F0834E);
+  -webkit-tap-highlight-color: transparent;
+}
+body.tg-v2 .v2-ai img { width: 58px; height: 58px; flex: 0 0 auto; }
+body.tg-v2 .v2-ai-text { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+body.tg-v2 .v2-ai-text b { font-size: 16.5px; font-weight: 600; color: #fff; }
+body.tg-v2 .v2-ai-text span { font-size: 12.5px; color: rgba(255,255,255,.86); }
+
+/* --- плитки: 3 в ряд, все 112px, подпись в одну строку --- */
+body.tg-v2 .v2-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+body.tg-v2 .v2-tile {
+  height: 112px; padding: 14px 6px 12px; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  text-align: center; border-radius: 18px; border: 1px solid rgba(255,255,255,.07);
+  cursor: pointer; font-family: inherit; color: #F7F1F2;
+  background: radial-gradient(80% 70% at 12% 6%, var(--t1) 0%, transparent 70%),
+              radial-gradient(80% 75% at 92% 100%, var(--t2) 0%, transparent 72%),
+              linear-gradient(150deg, rgba(255,255,255,.06), transparent 42%), #130F17;
+  -webkit-tap-highlight-color: transparent;
+}
+body.tg-v2 .v2-tile:active { filter: brightness(1.15); }
+body.tg-v2 .v2-tile-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+body.tg-v2 .v2-tile-icon img { width: 30px; height: 30px; transform: scale(var(--ts, 1)); filter: drop-shadow(0 0 7px var(--g1)) drop-shadow(0 0 14px var(--g2)); }
+body.tg-v2 .v2-tile-text { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 100%; }
+body.tg-v2 .v2-tile-name { font-size: 13px; font-weight: 600; letter-spacing: -.1px; white-space: nowrap; }
+body.tg-v2 .v2-tile-desc { font-size: 11px; color: #B9ADB4; white-space: nowrap; }
+/* Узкие телефоны (360): «Игра в долгую» и «анализы, рецепты» не влезали в 87px колонки.
+   На 390 всё как в макете. */
+@media (max-width: 374px) {
+  body.tg-v2 .v2-tile { padding-left: 3px; padding-right: 3px; }
+  body.tg-v2 .v2-tile-name { font-size: 12.5px; }
+  body.tg-v2 .v2-tile-desc { font-size: 10.5px; }
+}
+body.tg-v2 .v2-t-train  { --t1: rgba(96,196,206,.34); --t2: rgba(116,84,224,.32); --g1: rgba(96,196,206,.55); --g2: rgba(116,84,224,.5); --ts: 1.25; }
+body.tg-v2 .v2-t-diary  { --t1: rgba(246,168,92,.32); --t2: rgba(196,62,96,.32);  --g1: rgba(246,168,92,.52); --g2: rgba(196,62,96,.5);  --ts: 1.1; }
+body.tg-v2 .v2-t-cycle  { --t1: rgba(240,120,160,.32); --t2: rgba(176,112,240,.30); --ts: 1.1; }
+body.tg-v2 .v2-t-cycle .v2-tile-icon img { filter: drop-shadow(0 0 6px rgba(240,90,220,.45)) drop-shadow(0 0 12px rgba(91,201,242,.3)); }
+body.tg-v2 .v2-t-dolg   { --t1: rgba(96,180,250,.30); --t2: rgba(240,90,190,.32); --g1: rgba(96,180,250,.46); --g2: rgba(240,90,190,.52); }
+body.tg-v2 .v2-t-book   { --t1: rgba(110,140,250,.30); --t2: rgba(236,96,170,.30); --g1: rgba(110,140,250,.44); --g2: rgba(236,96,170,.44); }
+body.tg-v2 .v2-t-sprint { --t1: rgba(92,142,244,.32); --t2: rgba(138,82,236,.34); --g1: rgba(92,142,244,.5); --g2: rgba(138,82,236,.54); }
+
+/* --- «Приведи подругу»: тот же #refTile, перенесённый скриптом в .v2-stack --- */
+body.tg-v2 .ref-banner {
+  margin-top: 0; gap: 14px; padding: 13px 18px 13px 13px; border-radius: 20px;
+  border: 1px solid rgba(250,204,21,.32); color: #F7F1F2;
+  background: radial-gradient(55% 140% at 100% 0%, rgba(250,204,21,.20) 0%, transparent 70%),
+              radial-gradient(45% 120% at 0% 100%, rgba(240,131,78,.16) 0%, transparent 70%), #130F17;
+}
+body.tg-v2 .ref-banner::before { display: none; }
+body.tg-v2 .ref-banner:active { filter: brightness(1.15); background: radial-gradient(55% 140% at 100% 0%, rgba(250,204,21,.20) 0%, transparent 70%), radial-gradient(45% 120% at 0% 100%, rgba(240,131,78,.16) 0%, transparent 70%), #130F17; }
+body.tg-v2 .ref-banner-icon { width: 42px; height: 42px; border-radius: 13px; background: rgba(250,204,21,.12); border: 1px solid rgba(250,204,21,.30); }
+body.tg-v2 .ref-banner-text { display: flex; flex-direction: column; gap: 2px; }
+body.tg-v2 .ref-banner-title { font-family: inherit; font-size: 15px; font-weight: 600; color: #F7F1F2; }
+body.tg-v2 .ref-banner-sub { font-family: inherit; font-size: 12.5px; color: #CBBCC3; margin-top: 0; }
+body.tg-v2 .ref-banner-arrow { display: flex; }
+
+/* --- вкладки и список: отступы под стопку плиток (остальное общее с вебом) --- */
+body.tg-v2 .tabs { padding-top: 22px; }
+body.tg-v2 .section-label { margin: 22px 0 12px; color: #8A8098; }
+
+/* --- подэкраны: Тренировки, Все спринты, Справочники --- */
+body.tg-v2.v2-sub-open .v2-home,
+body.tg-v2.v2-sub-open .tabs,
+body.tg-v2.v2-sub-open .content { display: none; }
+/* Низ с запасом 96px: справа внизу плавающие кнопки «?» и «на экран Домой». */
+body.tg-v2.v2-sub-open .v2-sub { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 96px; }
+body.tg-v2 .v2-page[hidden] { display: none; }
+body.tg-v2 .v2-page { display: flex; flex-direction: column; gap: 10px; }
+body.tg-v2 .v2-back {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 6px;
+  height: 44px; padding: 0 14px 0 8px; border-radius: 100px;
+  border: 1px solid rgba(242,238,246,.10); background: transparent;
+  color: var(--w-text); font-family: inherit; font-size: 14px; cursor: pointer;
+}
+body.tg-v2 .v2-head { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 8px; }
+body.tg-v2 .v2-head h1 { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-weight: 500; font-size: 36px; line-height: 1.05; letter-spacing: -.5px; }
+body.tg-v2 .v2-head p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--w-muted); max-width: 300px; }
+body.tg-v2 .v2-prog {
+  display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 22px;
+  min-height: 160px; padding: 20px; margin-bottom: 4px; border-radius: 22px; border: 1px solid rgba(255,255,255,.07);
+  text-align: left; cursor: pointer; font-family: inherit; color: #F7F1F2;
+  background: radial-gradient(60% 70% at 10% 6%, var(--t1) 0%, transparent 70%),
+              radial-gradient(65% 75% at 95% 100%, var(--t2) 0%, transparent 72%),
+              linear-gradient(150deg, rgba(255,255,255,.06), transparent 42%), #130F17;
+}
+body.tg-v2 .v2-prog svg.v2-prog-icon { filter: drop-shadow(0 0 8px var(--t1)) drop-shadow(0 0 18px var(--t2)); }
+body.tg-v2 .v2-prog-body { width: 100%; display: flex; align-items: flex-end; gap: 12px; }
+body.tg-v2 .v2-prog-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+body.tg-v2 .v2-prog-text b { font-size: 19px; font-weight: 600; }
+body.tg-v2 .v2-prog-text span { font-size: 13px; line-height: 1.35; color: #B9ADB4; }
+body.tg-v2 .v2-row {
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  padding: 12px 14px 12px 12px; border-radius: 18px; border: 1px solid rgba(255,255,255,.07);
+  background: var(--w-card); text-align: left; cursor: pointer; font-family: inherit; color: var(--w-text);
+}
+body.tg-v2 .v2-row:active { background: var(--w-card-hi); }
+body.tg-v2 .v2-row-sq { width: 46px; height: 46px; flex: 0 0 auto; border-radius: 14px; }
+body.tg-v2 .v2-row-text { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+body.tg-v2 .v2-row-top { display: flex; align-items: center; gap: 8px; min-width: 0; }
+body.tg-v2 .v2-row-title { font-size: 15.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.tg-v2 .v2-row-desc { font-size: 12.5px; line-height: 1.35; color: var(--w-muted); }
+body.tg-v2 .v2-list { display: flex; flex-direction: column; gap: 10px; }
+body.tg-v2 .v2-group { font-size: 11px; letter-spacing: .17em; text-transform: uppercase; color: #8A8098; margin: 14px 0 2px; }
+body.tg-v2 .v2-group:first-child { margin-top: 0; }
+body.tg-v2 .v2-now { flex: 0 0 auto; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px; color: #2A0F1A; background: #F2A0AE; }
 </style>
 </head>
 <body>
+<script>
+// ТГ, НОВЫЙ ВИД (tg-v2, 19.10.2026). Включается ДО первой отрисовки, чтобы старый вид не мигнул.
+// Только телеграм (есть initData), только id из списка или ?ui=2 (локальное превью).
+// Открыть всем: all: true. Веб (is-web) не затрагивается ни при каком значении.
+var STUDIO_V2 = { all: false, ids: [184766639, 514894075] };
+(function () {
+  try {
+    var tg = window.Telegram && window.Telegram.WebApp;
+    if (!tg || !tg.initData) return;
+    var id = tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id;
+    var on = STUDIO_V2.all || STUDIO_V2.ids.indexOf(Number(id)) !== -1 ||
+             new URLSearchParams(location.search).get("ui") === "2";
+    if (!on) return;
+    document.documentElement.classList.add("tg-v2");
+    document.body.classList.add("tg-v2");
+  } catch (e) {}
+})();
+</script>
 <div class="bg"></div>
 
 <audio id="musicAudio" preload="none"></audio>
@@ -975,6 +1181,49 @@ html.is-web .content { flex: none; overflow: visible; }
         <div class="ref-banner-sub">и получи месяц клуба бесплатно</div>
       </div>
       <div class="ref-banner-arrow">›</div>
+    </div>
+  </div>
+
+  <!-- ТГ, НОВЫЙ ВИД (tg-v2). Скрыт по умолчанию (.v2-home { display: none }), рисуется
+       только под body.tg-v2. Картинки loading="lazy": в скрытом блоке не грузятся,
+       у остальных участниц сеть прежняя. #refTile скрипт переносит в .v2-stack. -->
+  <div class="v2-home">
+    <div class="v2-hero">
+      <div class="v2-wave-wrap"><img class="v2-wave" src="img/wave-hero.webp" alt="" loading="lazy"></div>
+      <h1 class="v2-h1">Студия практик<span>от Ирены</span></h1>
+      <p class="v2-sub-text">твоё место силы</p>
+    </div>
+    <div class="v2-stack" id="v2Stack">
+      <button type="button" class="v2-ai" onclick="openApp('https://t.me/relax2000_bot/tracker?startapp=ai')">
+        <img src="icons/podruzhka-card.png" alt="" width="58" height="58" loading="lazy">
+        <span class="v2-ai-text"><b>ИИ-подружка</b><span>спроси про добавки, цикл, самочувствие</span></span>
+      </button>
+      <div class="v2-grid">
+        <button type="button" class="v2-tile v2-t-train" data-v2-open="trainings">
+          <span class="v2-tile-icon"><img src="icons/trainings.png" alt="" loading="lazy"></span>
+          <span class="v2-tile-text"><span class="v2-tile-name">Тренировки</span><span class="v2-tile-desc">тело, ягодицы</span></span>
+        </button>
+        <button type="button" class="v2-tile v2-t-diary" onclick="openApp('https://t.me/relax2000_bot/tracker')">
+          <span class="v2-tile-icon"><img src="icons/trackers.png" alt="" loading="lazy"></span>
+          <span class="v2-tile-text"><span class="v2-tile-name">Дневник</span><span class="v2-tile-desc">привычки</span></span>
+        </button>
+        <button type="button" class="v2-tile v2-t-cycle" onclick="openApp('https://t.me/relax2000_bot/cycle')">
+          <span class="v2-tile-icon"><img src="icons/cycle.png" alt="" loading="lazy"></span>
+          <span class="v2-tile-text"><span class="v2-tile-name">Цикл</span><span class="v2-tile-desc">фазы, прогноз</span></span>
+        </button>
+        <button type="button" class="v2-tile v2-t-dolg" onclick="openRouteTile('dolgaya')">
+          <span class="v2-tile-icon"><img src="icons/dolgaya.png" alt="" loading="lazy"></span>
+          <span class="v2-tile-text"><span class="v2-tile-name">Игра в долгую</span><span class="v2-tile-desc">курс отношений</span></span>
+        </button>
+        <button type="button" class="v2-tile v2-t-book" data-v2-open="handbook">
+          <span class="v2-tile-icon"><img src="icons/handbook.png" alt="" loading="lazy"></span>
+          <span class="v2-tile-text"><span class="v2-tile-name">Справочники</span><span class="v2-tile-desc">анализы, рецепты</span></span>
+        </button>
+        <button type="button" class="v2-tile v2-t-sprint" data-v2-open="sprints">
+          <span class="v2-tile-icon"><img src="icons/sprints.png" alt="" loading="lazy"></span>
+          <span class="v2-tile-text"><span class="v2-tile-name">Все спринты</span><span class="v2-tile-desc">оглавления</span></span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1287,6 +1536,36 @@ html.is-web .content { flex: none; overflow: visible; }
       </div>
     </div>
 
+  </div>
+
+  <!-- ТГ, НОВЫЙ ВИД: подэкраны внутри студии. Списки спринтов и справочников рисует
+       скрипт из V2_LISTS (там же их править). -->
+  <div class="v2-sub" id="v2Sub">
+    <button type="button" class="v2-back" data-v2-close>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+      Студия
+    </button>
+    <div class="v2-page" data-v2-page="trainings" hidden>
+      <div class="v2-head"><h1>Тренировки</h1><p>Выбери программу</p></div>
+      <button type="button" class="v2-prog" style="--t1: rgba(251,146,60,.34); --t2: rgba(232,110,150,.32)" onclick="openApp('https://t.me/relax2000_bot/workout')">
+        <svg class="v2-prog-icon" width="40" height="40" viewBox="0 0 32 32" fill="none" aria-hidden="true"><defs><linearGradient id="v2gBody" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5BC9F2"/><stop offset=".5" stop-color="#B57CFF"/><stop offset="1" stop-color="#FF5FAE"/></linearGradient></defs><path d="M14 5c1.1 5.2 3.1 7.2 8.3 8.3-5.2 1.1-7.2 3.1-8.3 8.3-1.1-5.2-3.1-7.2-8.3-8.3C10.9 12.2 12.9 10.2 14 5z" stroke="url(#v2gBody)" stroke-width="2" stroke-linejoin="round"/><path d="M23.5 19.5c.5 2.2 1.3 3 3.5 3.5-2.2.5-3 1.3-3.5 3.5-.5-2.2-1.3-3-3.5-3.5 2.2-.5 3-1.3 3.5-3.5z" stroke="url(#v2gBody)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span class="v2-prog-body"><span class="v2-prog-text"><b>Женское тело</b><span>тренировки для всего тела</span></span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9C93AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
+      </button>
+      <button type="button" class="v2-prog" style="--t1: rgba(244,114,182,.34); --t2: rgba(124,92,255,.32)" onclick="openApp('https://t.me/relax2000_bot/glutes')">
+        <svg class="v2-prog-icon" width="40" height="40" viewBox="0 0 32 32" fill="none" aria-hidden="true"><defs><linearGradient id="v2gFlame" x1="6" y1="4" x2="26" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5BC9F2"/><stop offset=".5" stop-color="#B57CFF"/><stop offset="1" stop-color="#FF5FAE"/></linearGradient></defs><path d="M16 4c1.2 4.2-4.5 6.6-4.5 12.5a6.5 6.5 0 0 0 13 0c0-3.2-1.6-5.4-3.2-7 .1 2.1-1 3.7-2.6 3.7C17.6 12.4 19.4 8.2 16 4z" stroke="url(#v2gFlame)" stroke-width="2" stroke-linejoin="round"/><path d="M16 26a3 3 0 0 1-3-3c0-1.8 1.5-3 3-4.8 1.5 1.8 3 3 3 4.8a3 3 0 0 1-3 3z" stroke="url(#v2gFlame)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span class="v2-prog-body"><span class="v2-prog-text"><b>Биохакинг ягодиц</b><span>программа для ягодиц</span></span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9C93AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
+      </button>
+    </div>
+    <div class="v2-page" data-v2-page="sprints" hidden>
+      <div class="v2-head"><h1>Все спринты</h1><p>Все программы клуба. Нажми, и откроется навигация по спринту в канале.</p></div>
+      <div class="v2-list" data-v2-list="sprints"></div>
+    </div>
+    <div class="v2-page" data-v2-page="handbook" hidden>
+      <div class="v2-head"><h1>Справочники</h1><p>Шпаргалки и материалы клуба. Нажми, и откроется пост в канале.</p></div>
+      <div class="v2-list" data-v2-list="handbook"></div>
+    </div>
   </div>
 </div>
 
@@ -1970,6 +2249,113 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
         .catch(function () {});
     });
   } catch (e) {}
+})();
+
+// ===== ТГ, НОВЫЙ ВИД (tg-v2): шрифты, цвета шапки, баннер, подэкраны. Без класса ни строки. =====
+// Спринты и справочники: один массив на раздел, ссылки на посты канала (формат как в
+// biohack/src/App.js: t.me/c/<id канала>/<id поста>). Сверено с архивом канала 19.10.2026
+// (C:\biohack-archive\raw\posts.jsonl, оглавления = ссылки закреплённого меню, пост 14).
+// Справочники: ничего про БАДы и добавки. group = подпись над группой.
+var V2_CH = "https://t.me/c/3838914998/";
+var V2_LISTS = {
+  sprints: [
+    { title: "Биохакинг отношений", sub: "новый день по будням", post: 589, now: true, sq: "#7B2E9E, #C63C74 55%, #F0834E" },
+    { title: "Перименопауза",       sub: "14 дней", post: 551, sq: "#4C2038, #C63C74" },
+    { title: "Омоложение изнутри",  sub: "25 дней", post: 483, sq: "#2A3C7A, #B57CFF" },
+    { title: "Биохакинг ягодиц",    sub: "49 дней", post: 343, sq: "#5A1F4A, #F472B6" },
+    { title: "Основы питания",      sub: "32 дня",  post: 264, sq: "#7A4A1E, #F0B27A" },
+    { title: "ЖКТ и женское тело",  sub: "31 день", post: 108, sq: "#1F5A5A, #5BC9F2" },
+    { title: "Анти-хаос",           sub: "11 дней", post: 81,  sq: "#3B2A6E, #7C5CFF" },
+    { title: "Архитектура сна",     sub: "13 дней", post: 49,  sq: "#14203F, #4F6FD8" },
+  ],
+  handbook: [
+    { group: "Анализы", title: "Анализы",                   sub: "что сдавать и как читать",      post: 36,  sq: "#1F5A5A, #5BC9F2" },
+    { title: "Анализы на дефициты",                         sub: "список анализов, PDF",          post: 267, sq: "#1F5A5A, #5BC9F2" },
+    { title: "Шпаргалка по анализам",                       sub: "расшифровка анализов крови, PDF",              post: 269, sq: "#2A3C7A, #B57CFF" },
+    { group: "Питание и рецепты", title: "Кулинарная книга", sub: "завтраки, обеды, ужины, смузи", post: 34,  sq: "#7A4A1E, #F0B27A" },
+    { title: "15 завтраков по-женски",                      sub: "книга рецептов, PDF",           post: 280, sq: "#7A4A1E, #F0B27A" },
+    { title: "15 обедов по-женски",                         sub: "книга рецептов, PDF",           post: 284, sq: "#7A4A1E, #F0B27A" },
+    { title: "15 ужинов по-женски",                         sub: "книга рецептов, PDF",           post: 286, sq: "#7A4A1E, #F0B27A" },
+    { title: "Железная бомба",                              sub: "рецепты для ферритина, PDF",    post: 296, sq: "#4C2038, #C63C74" },
+    { title: "Здоровая тарелка",                            sub: "углеводы, жиры, овощи",         post: 274, sq: "#2E5A2A, #94C89C" },
+    { title: "Клетчатка в продуктах",                       sub: "таблица по граммам",            post: 176, sq: "#2E5A2A, #94C89C" },
+    { title: "Питание по фазам цикла",                      sub: "что есть в каждую фазу",        post: 300, sq: "#4C2038, #F2A0AE" },
+    { group: "Тело и уход", title: "Идеальный живот дома",  sub: "масло, скрабы, уход",           post: 235, sq: "#3B2A6E, #F472B6" },
+    { title: "Самопроверка тазового дна",                   sub: "правильно ли тренируешь, PDF",  post: 332, sq: "#3B2A6E, #7C5CFF" },
+    { title: "Тазовое дно: памятка",                        sub: "слабость или гипертонус, PDF",  post: 400, sq: "#3B2A6E, #7C5CFF" },
+    { title: "Массаж гуаша для живота",                     sub: "уход за 10 минут, PDF",         post: 338, sq: "#3B2A6E, #F472B6" },
+    { title: "Памятка по давлению",                         sub: "сердце и сосуды, PDF",          post: 488, sq: "#14203F, #4F6FD8" },
+    { title: "Мой уход пошагово",                           sub: "уход за лицом, PDF",            post: 516, sq: "#4C2038, #F2A0AE" },
+    { title: "Справочник по косметологии",                  sub: "12 процедур, PDF",              post: 541, sq: "#4C2038, #F2A0AE" },
+    { title: "Карта молодости",                             sub: "карта на 30 дней, PDF",         post: 526, sq: "#2A3C7A, #B57CFF" },
+    { title: "Моё утро для себя",                           sub: "утренний ритуал Ирены",         post: 522, sq: "#7A4A1E, #FFD060" },
+    { group: "Перименопауза", title: "Анкета перименопаузы", sub: "первый документ в папку, PDF", post: 555, sq: "#4C2038, #C63C74" },
+    { title: "Дневник сна на 14 дней",                      sub: "PDF",                           post: 563, sq: "#14203F, #4F6FD8" },
+    { title: "Лист «Мои цифры»",                            sub: "отслеживаем переход, PDF",      post: 565, sq: "#4C2038, #C63C74" },
+    { title: "Лист к врачу",                                sub: "вопросы на приём, PDF",         post: 567, sq: "#4C2038, #C63C74" },
+    { title: "Гормональная терапия",                        sub: "памятка: что знать о ЗГТ, PDF",          post: 569, sq: "#4C2038, #C63C74" },
+    { title: "Карта перехода",                              sub: "итог спринта, PDF",             post: 586, sq: "#4C2038, #C63C74" },
+  ],
+};
+if (document.body.classList.contains("tg-v2")) (function () {
+  var tg = window.Telegram && window.Telegram.WebApp;
+  try { tg.setHeaderColor("#0A0711"); tg.setBackgroundColor("#0A0711"); } catch (e) {}
+
+  (function loadV2Fonts() {
+    var css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Onest:wght@400;500;600&display=swap";
+    document.head.appendChild(css);
+  })();
+
+  // Баннер «Приведи подругу»: тот же узел и та же логика показа (refTileFlag), меняется место и иконка.
+  var ref = document.getElementById("refTile");
+  if (ref) {
+    document.getElementById("v2Stack").appendChild(ref);
+    ref.querySelector(".ref-banner-icon").innerHTML = '<svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><defs><linearGradient id="v2gGift" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FCD34D"/><stop offset="1" stop-color="#F0834E"/></linearGradient></defs><rect x="3.5" y="8.5" width="17" height="4" rx="1.2" stroke="url(#v2gGift)" stroke-width="1.8"/><path d="M5 12.5v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7M12 8.5v12M12 8.5c-1.5-3.2-5-3.6-5-1.4 0 1.4 2.4 1.4 5 1.4zm0 0c1.5-3.2 5-3.6 5-1.4 0 1.4-2.4 1.4-5 1.4z" stroke="url(#v2gGift)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    ref.querySelector(".ref-banner-arrow").innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9C93AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+  }
+
+  // Списки подэкранов из V2_LISTS. textContent, не innerHTML: тексты не размечаем.
+  var EXT = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9C93AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; }
+  document.querySelectorAll("[data-v2-list]").forEach(function (box) {
+    (V2_LISTS[box.getAttribute("data-v2-list")] || []).forEach(function (it) {
+      if (it.group) box.appendChild(el("div", "v2-group", it.group));
+      var row = el("button", "v2-row"); row.type = "button";
+      row.setAttribute("data-url", V2_CH + it.post);
+      var sq = el("span", "v2-row-sq"); sq.style.background = "linear-gradient(135deg, " + it.sq + ")";
+      var text = el("span", "v2-row-text"), top = el("span", "v2-row-top");
+      top.appendChild(el("span", "v2-row-title", it.title));
+      if (it.now) top.appendChild(el("span", "v2-now", "идёт сейчас"));
+      text.appendChild(top); text.appendChild(el("span", "v2-row-desc", it.sub));
+      row.appendChild(sq); row.appendChild(text); row.insertAdjacentHTML("beforeend", EXT);
+      row.addEventListener("click", function () {
+        try { tg.openTelegramLink(row.getAttribute("data-url")); } catch (e) {}
+      });
+      box.appendChild(row);
+    });
+  });
+
+  // Подэкраны: кнопка «‹ Студия» и системная BackButton ведут на главный экран, на прежнюю прокрутку.
+  var app = document.querySelector(".app"), sub = document.getElementById("v2Sub"), mainTop = 0;
+  function closeSub() {
+    document.body.classList.remove("v2-sub-open");
+    try { tg.BackButton.hide(); } catch (e) {}
+    app.scrollTop = mainTop;
+  }
+  function openSub(name) {
+    mainTop = app.scrollTop;
+    sub.querySelectorAll("[data-v2-page]").forEach(function (p) { p.hidden = p.getAttribute("data-v2-page") !== name; });
+    document.body.classList.add("v2-sub-open");
+    app.scrollTop = 0;
+    try { tg.BackButton.show(); } catch (e) {}
+  }
+  try { tg.BackButton.onClick(closeSub); } catch (e) {}
+  document.querySelectorAll("[data-v2-open]").forEach(function (b) {
+    b.addEventListener("click", function () { openSub(b.getAttribute("data-v2-open")); });
+  });
+  sub.querySelector("[data-v2-close]").addEventListener("click", closeSub);
 })();
 </script>
 
