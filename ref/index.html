@@ -24,7 +24,10 @@ button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparen
 .screen{max-width:480px;margin:0 auto;padding:20px 20px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:20px}
 .screen[hidden]{display:none}
 .top{display:flex;align-items:center;gap:8px;height:44px;margin-left:-10px}
-.back{width:44px;height:44px;border:0;background:none;color:var(--text);display:flex;align-items:center;justify-content:center;border-radius:22px}
+/* «‹ Студия»: кнопка вся пилюля (стрелка + слово), высота 44, стрелка в своём квадрате 44x44 (19.10.2026) */
+.back{height:44px;min-width:44px;border:0;background:none;color:var(--text);display:flex;align-items:center;gap:8px;padding:0 14px 0 0;border-radius:22px;font:inherit;text-align:left}
+.back:active{background:var(--soft)}
+.back-i{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center}
 .top-label{font-size:15px;font-weight:500;color:var(--muted)}
 h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:34px;line-height:1.12}
 h1.sm{font-size:30px;line-height:1.15}
@@ -258,7 +261,7 @@ em.acc{font-family:Playfair,Georgia,serif;font-style:italic;font-weight:500;font
 
   // ---------- экраны ----------
   function topBar(labelKey, act) {
-    return '<div class="top"><button class="back" type="button" data-act="' + act + '" aria-label="Назад">' + ICON.back + '</button><div class="top-label">' + T(labelKey) + "</div></div>";
+    return '<div class="top"><button class="back" type="button" data-act="' + act + '"><span class="back-i">' + ICON.back + '</span><span class="top-label">' + T(labelKey) + "</span></button></div>";
   }
   // «Условия программы» (15.10.2026): отдельная страница rules.html вместо шторки «Все правила».
   function termsLabel() { return plain("common.terms_link") ? T("common.terms_link") : "Условия программы"; }
