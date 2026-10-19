@@ -2250,6 +2250,11 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
     var URLS = ["https://kjzxrpwqyyjcykwbqskn.supabase.co/functions/v1/referral-api",
                 "https://biohack-tracker-blond.vercel.app/sb/functions/v1/referral-api"];
     var deadline = Date.now() + 2000;
+    // Новый вид (tg-v2) прикладывает initData: id из admin.preview_ids видят плитку до запуска
+    // (referral-api, 19.10.2026). Старый вид шлёт прежнее тело без initData.
+    var body = document.body.classList.contains("tg-v2")
+      ? JSON.stringify({ action: "tile", initData: irenaGetInitData() || "" })
+      : '{"action":"tile"}';
     function show() {
       if (Date.now() > deadline) return;
       var el = document.getElementById("refTile");
@@ -2258,7 +2263,7 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
     URLS.forEach(function (u) {
       var ctl = window.AbortController ? new AbortController() : null;
       if (ctl) setTimeout(function () { try { ctl.abort(); } catch (e) {} }, 2000);
-      fetch(u, { method: "POST", body: '{"action":"tile"}', cache: "no-store", signal: ctl ? ctl.signal : undefined })
+      fetch(u, { method: "POST", body: body, cache: "no-store", signal: ctl ? ctl.signal : undefined })
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) { if (d && d.tile === true) show(); })
         .catch(function () {});
