@@ -965,7 +965,11 @@ body.tg-v2 .v2-home { display: block; flex-shrink: 0; }
 /* --- шапка: картинка с надписью (img/studio-banner.webp, 1170x430) во всю ширину.
    Фон по краям картинки = фон экрана, поэтому маски нет (с ней тускнела волна).
    Текст для экранного чтения - скрытый h1. --- */
-body.tg-v2 .v2-banner { position: relative; margin: 0 0 8px; }
+/* Карточка подружки заходит на низ картинки (-18px) и лежит поверх неё (.v2-stack позже в DOM). */
+body.tg-v2 .v2-banner { position: relative; margin: 0 0 -18px; }
+/* Низ надписи «твоё место силы» = строка 347 из 430 картинки. На 360 при -18px до карточки
+   оставалось 7.5px, нужно не меньше 8: на узких -17px (8.5px). На 390: 9.7px. */
+@media (max-width: 374px) { body.tg-v2 .v2-banner { margin-bottom: -17px; } }
 body.tg-v2 .v2-banner img { display: block; width: 100%; height: auto; aspect-ratio: 1170 / 430; }
 body.tg-v2 .v2-vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
@@ -997,14 +1001,29 @@ body.tg-v2 .v2-tile {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
   text-align: center; border-radius: 18px; border: 1px solid rgba(255,255,255,.07);
   cursor: pointer; font-family: inherit; color: #F7F1F2;
-  background: radial-gradient(80% 70% at 12% 6%, var(--t1) 0%, transparent 70%),
-              radial-gradient(80% 75% at 92% 100%, var(--t2) 0%, transparent 72%),
-              linear-gradient(150deg, rgba(255,255,255,.06), transparent 42%), #130F17;
+  /* Как плитка сайта (irenabio-app/style.css, .home .t5): фон сплошной, дымок размытым слоем
+     ::before с запасом -40%, блик ::after. Радиалы прямо в фоне упирались в края и давали
+     светлые дуги. Маска - страховка Safari: blur у ::before уходит из-под overflow:hidden. */
+  position: relative; isolation: isolate; overflow: hidden;
+  background: #130F17;
+  -webkit-mask-image: radial-gradient(#fff, #000);
   -webkit-tap-highlight-color: transparent;
 }
+body.tg-v2 .v2-tile::before {
+  content: ""; position: absolute; inset: -40%; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(42% 42% at 20% 14%, var(--smoke-a) 0%, transparent 68%),
+    radial-gradient(48% 48% at 84% 88%, var(--smoke-b) 0%, transparent 72%);
+  filter: blur(20px);
+}
+body.tg-v2 .v2-tile::after {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(150deg, rgba(255,255,255,.07), transparent 42%);
+}
+body.tg-v2 .v2-tile > * { position: relative; z-index: 1; }
 body.tg-v2 .v2-tile:active { filter: brightness(1.15); }
 body.tg-v2 .v2-tile-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
-body.tg-v2 .v2-tile-icon img { width: 30px; height: 30px; transform: scale(var(--ts, 1)); filter: drop-shadow(0 0 7px var(--g1)) drop-shadow(0 0 14px var(--g2)); }
+body.tg-v2 .v2-tile-icon img { width: 30px; height: 30px; transform: scale(var(--ts, 1)); filter: drop-shadow(0 0 7px var(--smoke-a)) drop-shadow(0 0 16px var(--smoke-b)); }
 body.tg-v2 .v2-tile-text { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 100%; }
 body.tg-v2 .v2-tile-name { font-size: 13px; font-weight: 600; letter-spacing: -.1px; white-space: nowrap; }
 body.tg-v2 .v2-tile-desc { font-size: 11px; color: #B9ADB4; white-space: nowrap; }
@@ -1015,13 +1034,13 @@ body.tg-v2 .v2-tile-desc { font-size: 11px; color: #B9ADB4; white-space: nowrap;
   body.tg-v2 .v2-tile-name { font-size: 12.5px; }
   body.tg-v2 .v2-tile-desc { font-size: 10.5px; }
 }
-body.tg-v2 .v2-t-train  { --t1: rgba(96,196,206,.34); --t2: rgba(116,84,224,.32); --g1: rgba(96,196,206,.55); --g2: rgba(116,84,224,.5); --ts: 1.25; }
-body.tg-v2 .v2-t-diary  { --t1: rgba(246,168,92,.32); --t2: rgba(196,62,96,.32);  --g1: rgba(246,168,92,.52); --g2: rgba(196,62,96,.5);  --ts: 1.1; }
-body.tg-v2 .v2-t-cycle  { --t1: rgba(240,120,160,.32); --t2: rgba(176,112,240,.30); --ts: 1.1; }
-body.tg-v2 .v2-t-cycle .v2-tile-icon img { filter: drop-shadow(0 0 6px rgba(240,90,220,.45)) drop-shadow(0 0 12px rgba(91,201,242,.3)); }
-body.tg-v2 .v2-t-dolg   { --t1: rgba(96,180,250,.30); --t2: rgba(240,90,190,.32); --g1: rgba(96,180,250,.46); --g2: rgba(240,90,190,.52); }
-body.tg-v2 .v2-t-book   { --t1: rgba(110,140,250,.30); --t2: rgba(236,96,170,.30); --g1: rgba(110,140,250,.44); --g2: rgba(236,96,170,.44); }
-body.tg-v2 .v2-t-sprint { --t1: rgba(92,142,244,.32); --t2: rgba(138,82,236,.34); --g1: rgba(92,142,244,.5); --g2: rgba(138,82,236,.54); }
+/* Токены дымка и свечения иконки = сайт (.home .t5[data-group=...]); цикл свой. */
+body.tg-v2 .v2-t-train  { --smoke-a: rgba(96,196,206,.55);  --smoke-b: rgba(116,84,224,.50); --ts: 1.25; }
+body.tg-v2 .v2-t-diary  { --smoke-a: rgba(246,168,92,.52);  --smoke-b: rgba(196,62,96,.50);  --ts: 1.1; }
+body.tg-v2 .v2-t-cycle  { --smoke-a: rgba(240,120,160,.50); --smoke-b: rgba(176,112,240,.50); --ts: 1.1; }
+body.tg-v2 .v2-t-dolg   { --smoke-a: rgba(96,180,250,.46);  --smoke-b: rgba(240,90,190,.52); }
+body.tg-v2 .v2-t-book   { --smoke-a: rgba(110,140,250,.44); --smoke-b: rgba(236,96,170,.44); }
+body.tg-v2 .v2-t-sprint { --smoke-a: rgba(92,142,244,.50);  --smoke-b: rgba(138,82,236,.54); }
 
 /* --- «Приведи подругу»: тот же #refTile, перенесённый скриптом в .v2-stack --- */
 body.tg-v2 .ref-banner {
