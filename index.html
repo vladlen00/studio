@@ -962,31 +962,13 @@ body.tg-v2 .header,
 body.tg-v2 .tools-section { display: none; }
 body.tg-v2 .v2-home { display: block; flex-shrink: 0; }
 
-/* --- герой: без overflow:hidden, низ волны уходит под карточку подружки --- */
-body.tg-v2 .v2-hero { position: relative; padding: 26px 20px 12px; }
-body.tg-v2 .v2-wave-wrap {
-  position: absolute; top: 0; right: -5.1%;
-  width: 68.5%; height: 0; padding-bottom: 51.1%;
-  pointer-events: none; user-select: none; overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, #000 52%, transparent 96%);
-          mask-image: linear-gradient(to bottom, #000 52%, transparent 96%);
-}
-body.tg-v2 .v2-wave {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; object-position: right center;
-  -webkit-mask-image: linear-gradient(to right, transparent 2%, #000 46%);
-          mask-image: linear-gradient(to right, transparent 2%, #000 46%);
-}
-body.tg-v2 .v2-h1 {
-  position: relative; margin: 0 0 12px;
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-weight: 500; font-size: 38px; line-height: 1.04; letter-spacing: -.57px;
-  color: var(--w-text);
-}
-body.tg-v2 .v2-h1 span { display: block; color: var(--w-violet-soft); }
-body.tg-v2 .v2-sub-text { position: relative; margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--w-muted); }
+/* --- шапка: картинка с надписью (img/studio-banner.webp, 1170x430) во всю ширину.
+   Фон по краям картинки = фон экрана, поэтому маски нет (с ней тускнела волна).
+   Текст для экранного чтения - скрытый h1. --- */
+body.tg-v2 .v2-banner { position: relative; margin: 0 0 8px; }
+body.tg-v2 .v2-banner img { display: block; width: 100%; height: auto; aspect-ratio: 1170 / 430; }
+body.tg-v2 .v2-vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-/* --- всё ниже героя лежит поверх волны --- */
 body.tg-v2 .v2-stack { position: relative; padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
 body.tg-v2 .tabs, body.tg-v2 .content { position: relative; }
 
@@ -1076,7 +1058,7 @@ body.tg-v2 .v2-back {
 }
 body.tg-v2 .v2-head { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 8px; }
 body.tg-v2 .v2-head h1 { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-weight: 500; font-size: 36px; line-height: 1.05; letter-spacing: -.5px; }
-body.tg-v2 .v2-head p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--w-muted); max-width: 300px; }
+body.tg-v2 .v2-head p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--w-muted); }
 body.tg-v2 .v2-prog {
   display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 22px;
   min-height: 160px; padding: 20px; margin-bottom: 4px; border-radius: 22px; border: 1px solid rgba(255,255,255,.07);
@@ -1104,6 +1086,36 @@ body.tg-v2 .v2-row-desc { font-size: 12.5px; line-height: 1.35; color: var(--w-m
 body.tg-v2 .v2-list { display: flex; flex-direction: column; gap: 10px; }
 body.tg-v2 .v2-group { font-size: 11px; letter-spacing: .17em; text-transform: uppercase; color: #8A8098; margin: 14px 0 2px; }
 body.tg-v2 .v2-group:first-child { margin-top: 0; }
+/* --- «Все спринты»: полка постеров 2 в ряд, как на сайте (irenabio-app/style.css .shelf/.poster) --- */
+body.tg-v2 .v2-shelf { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+body.tg-v2 .v2-shelf-h { grid-column: 1 / -1; font-size: 19px; font-weight: 600; margin: 14px 2px 0; }
+body.tg-v2 .v2-poster {
+  position: relative; overflow: hidden; aspect-ratio: 4 / 3; border-radius: 22px; padding: 14px;
+  display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch;
+  text-align: left; cursor: pointer; font-family: inherit; color: #fff;
+  background: linear-gradient(160deg, #2A2140, #150E22); background-clip: padding-box;
+  border: 1px solid rgba(255,255,255,.06); box-shadow: 0 10px 28px -14px rgba(0,0,0,.7);
+  -webkit-tap-highlight-color: transparent;
+}
+body.tg-v2 .v2-poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+body.tg-v2 .v2-poster::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to top, rgba(14,4,12,.92) 0%, rgba(14,4,12,.45) 42%, transparent 72%);
+}
+body.tg-v2 .v2-poster:active { filter: brightness(1.12); }
+/* Как на сайте: строка срока стоит в строке 16px/1.6, отсюда воздух под названием. */
+body.tg-v2 .v2-poster-info { position: relative; z-index: 2; display: block; font-size: 16px; line-height: 1.6; }
+body.tg-v2 .v2-poster-info b {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; font-weight: 500;
+  display: block; font-size: 17px; line-height: 1.15; letter-spacing: -0.01em; color: #fff; text-wrap: balance;
+}
+body.tg-v2 .v2-poster-info span { font-size: 11px; color: rgba(255,255,255,.72); }
+body.tg-v2 .v2-poster-badge {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  background: rgba(255,255,255,.92); color: #3A0E22;
+  font-size: 8.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 999px;
+}
 body.tg-v2 .v2-now { flex: 0 0 auto; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px; color: #2A0F1A; background: #F2A0AE; }
 </style>
 </head>
@@ -1188,10 +1200,9 @@ var STUDIO_V2 = { all: false, ids: [184766639, 514894075] };
        только под body.tg-v2. Картинки loading="lazy": в скрытом блоке не грузятся,
        у остальных участниц сеть прежняя. #refTile скрипт переносит в .v2-stack. -->
   <div class="v2-home">
-    <div class="v2-hero">
-      <div class="v2-wave-wrap"><img class="v2-wave" src="img/wave-hero.webp" alt="" loading="lazy"></div>
-      <h1 class="v2-h1">Студия практик<span>от Ирены</span></h1>
-      <p class="v2-sub-text">твоё место силы</p>
+    <div class="v2-banner">
+      <h1 class="v2-vh">Студия практик от Ирены</h1>
+      <img src="img/studio-banner.webp" alt="" width="1170" height="430" loading="lazy">
     </div>
     <div class="v2-stack" id="v2Stack">
       <button type="button" class="v2-ai" onclick="openApp('https://t.me/relax2000_bot/tracker?startapp=ai')">
@@ -1543,7 +1554,7 @@ var STUDIO_V2 = { all: false, ids: [184766639, 514894075] };
   <div class="v2-sub" id="v2Sub">
     <button type="button" class="v2-back" data-v2-close>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
-      Студия
+      <span data-v2-back-label>Студия</span>
     </button>
     <div class="v2-page" data-v2-page="trainings" hidden>
       <div class="v2-head"><h1>Тренировки</h1><p>Выбери программу</p></div>
@@ -1559,8 +1570,12 @@ var STUDIO_V2 = { all: false, ids: [184766639, 514894075] };
       </button>
     </div>
     <div class="v2-page" data-v2-page="sprints" hidden>
-      <div class="v2-head"><h1>Все спринты</h1><p>Все программы клуба. Нажми, и откроется навигация по спринту в канале.</p></div>
-      <div class="v2-list" data-v2-list="sprints"></div>
+      <div class="v2-head"><h1>Все спринты</h1><p>Открыты все. Начни с того, что откликается сейчас</p></div>
+      <div class="v2-shelf" data-v2-shelf></div>
+    </div>
+    <div class="v2-page" data-v2-page="episodes" hidden>
+      <div class="v2-head"><h1>Отдельные выпуски</h1><p>Подкасты Ирены вне спринтов. Нажми, и откроется выпуск в канале.</p></div>
+      <div class="v2-list" data-v2-list="episodes"></div>
     </div>
     <div class="v2-page" data-v2-page="handbook" hidden>
       <div class="v2-head"><h1>Справочники</h1><p>Шпаргалки и материалы клуба. Нажми, и откроется пост в канале.</p></div>
@@ -2258,15 +2273,31 @@ irenaCheckAccess().then(ok => { if (ok) init(); });
 // Справочники: ничего про БАДы и добавки. group = подпись над группой.
 var V2_CH = "https://t.me/c/3838914998/";
 var V2_LISTS = {
+  // Порядок и названия как на полке сайта (irenabio-app openSprints): идущий первым, дальше по
+  // хронологии канала (sprints.order_index). Обложки = covers/<cover_slug>.webp с сайта, сжатые.
   sprints: [
-    { title: "Биохакинг отношений", sub: "новый день по будням", post: 589, now: true, sq: "#7B2E9E, #C63C74 55%, #F0834E" },
-    { title: "Перименопауза",       sub: "14 дней", post: 551, sq: "#4C2038, #C63C74" },
-    { title: "Омоложение изнутри",  sub: "25 дней", post: 483, sq: "#2A3C7A, #B57CFF" },
-    { title: "Биохакинг ягодиц",    sub: "49 дней", post: 343, sq: "#5A1F4A, #F472B6" },
-    { title: "Основы питания",      sub: "32 дня",  post: 264, sq: "#7A4A1E, #F0B27A" },
-    { title: "ЖКТ и женское тело",  sub: "31 день", post: 108, sq: "#1F5A5A, #5BC9F2" },
-    { title: "Анти-хаос",           sub: "11 дней", post: 81,  sq: "#3B2A6E, #7C5CFF" },
-    { title: "Архитектура сна",     sub: "13 дней", post: 49,  sq: "#14203F, #4F6FD8" },
+    { title: "Биохакинг отношений",          sub: "новый день по будням", post: 589, now: true, cover: "relationships" },
+    { title: "Архитектура сна",              sub: "13 дней", post: 49,  cover: "sleep" },
+    { title: "Анти-хаос",                    sub: "11 дней", post: 81,  cover: "antichaos" },
+    { title: "Здоровый ЖКТ и женское тело",  sub: "31 день", post: 108, cover: "gut-body" },
+    { title: "Основы питания",               sub: "32 дня",  post: 264, cover: "nutrition" },
+    { title: "Биохакинг ягодиц",             sub: "49 дней", post: 343, cover: "glutes" },
+    { title: "Омоложение изнутри",           sub: "25 дней", post: 483, cover: "rejuvenation" },
+    { title: "Перименопауза",                sub: "14 дней", post: 551, cover: "perimenopause" },
+  ],
+  // Полка «Отдельные выпуски» (как на сайте, kind=episodes). У «Новой ветки» есть пост-оглавление,
+  // у «Отдельных выпусков» нет: открываем свой список выпусков (episodes ниже).
+  episodeShelf: [
+    { title: "Новая ветка вероятности", sub: "4 выпуска", post: 547, cover: "new-branch2" },
+    { title: "Отдельные выпуски",       sub: "6 выпусков", open: "episodes", cover: "episodes" },
+  ],
+  episodes: [
+    { title: "Куда девается энергия?",      sub: "подкаст, 3 августа",   post: 476, sq: "#2A3C7A, #B57CFF" },
+    { title: "Почему запреты не действуют", sub: "подкаст, 4 августа",   post: 477, sq: "#4C2038, #C63C74" },
+    { title: "Что оказалось эффективным",   sub: "подкаст, 5 августа",   post: 480, sq: "#7A4A1E, #F0B27A" },
+    { title: "1 сентября уже близко",       sub: "подкаст, 31 августа",  post: 530, sq: "#1F5A5A, #5BC9F2" },
+    { title: "Ковид, антибиотик, спазм",    sub: "подкаст, 1 сентября",  post: 531, sq: "#3B2A6E, #7C5CFF" },
+    { title: "Самый главный биохакинг",     sub: "подкаст, 8 сентября",  post: 543, sq: "#7B2E9E, #F0834E" },
   ],
   handbook: [
     { group: "Анализы", title: "Анализы",                   sub: "что сдавать и как читать",      post: 36,  sq: "#1F5A5A, #5BC9F2" },
@@ -2280,11 +2311,13 @@ var V2_LISTS = {
     { title: "Здоровая тарелка",                            sub: "углеводы, жиры, овощи",         post: 274, sq: "#2E5A2A, #94C89C" },
     { title: "Клетчатка в продуктах",                       sub: "таблица по граммам",            post: 176, sq: "#2E5A2A, #94C89C" },
     { title: "Питание по фазам цикла",                      sub: "что есть в каждую фазу",        post: 300, sq: "#4C2038, #F2A0AE" },
+    { title: "Подсластители",                               sub: "как читать состав, PDF",        post: 456, sq: "#2E5A2A, #94C89C" },
     { group: "Тело и уход", title: "Идеальный живот дома",  sub: "масло, скрабы, уход",           post: 235, sq: "#3B2A6E, #F472B6" },
     { title: "Самопроверка тазового дна",                   sub: "правильно ли тренируешь, PDF",  post: 332, sq: "#3B2A6E, #7C5CFF" },
     { title: "Тазовое дно: памятка",                        sub: "слабость или гипертонус, PDF",  post: 400, sq: "#3B2A6E, #7C5CFF" },
     { title: "Массаж гуаша для живота",                     sub: "уход за 10 минут, PDF",         post: 338, sq: "#3B2A6E, #F472B6" },
     { title: "Памятка по давлению",                         sub: "сердце и сосуды, PDF",          post: 488, sq: "#14203F, #4F6FD8" },
+    { title: "Как выбрать SPF",                             sub: "чистые фильтры, PDF",           post: 425, sq: "#7A4A1E, #FFD060" },
     { title: "Мой уход пошагово",                           sub: "уход за лицом, PDF",            post: 516, sq: "#4C2038, #F2A0AE" },
     { title: "Справочник по косметологии",                  sub: "12 процедур, PDF",              post: 541, sq: "#4C2038, #F2A0AE" },
     { title: "Карта молодости",                             sub: "карта на 30 дней, PDF",         post: 526, sq: "#2A3C7A, #B57CFF" },
@@ -2337,18 +2370,48 @@ if (document.body.classList.contains("tg-v2")) (function () {
     });
   });
 
-  // Подэкраны: кнопка «‹ Студия» и системная BackButton ведут на главный экран, на прежнюю прокрутку.
-  var app = document.querySelector(".app"), sub = document.getElementById("v2Sub"), mainTop = 0;
+  // Полка «Все спринты»: постеры как на сайте, обложка <img loading="lazy">.
+  function poster(it, badge) {
+    var b = el("button", "v2-poster"); b.type = "button";
+    var img = el("img"); img.alt = ""; img.loading = "lazy"; img.src = "covers/" + it.cover + ".webp"; b.appendChild(img);
+    if (badge) b.appendChild(el("span", "v2-poster-badge", badge));
+    var info = el("span", "v2-poster-info"); info.appendChild(el("b", "", it.title)); info.appendChild(el("span", "", it.sub));
+    b.appendChild(info);
+    b.addEventListener("click", function () {
+      if (it.open) { openSub(it.open); return; }
+      try { tg.openTelegramLink(V2_CH + it.post); } catch (e) {}
+    });
+    return b;
+  }
+  var shelf = document.querySelector("[data-v2-shelf]");
+  V2_LISTS.sprints.forEach(function (it) { shelf.appendChild(poster(it, it.now ? "идёт сейчас" : "")); });
+  if (V2_LISTS.episodeShelf.length) {
+    shelf.appendChild(el("div", "v2-shelf-h", "Отдельные выпуски"));
+    V2_LISTS.episodeShelf.forEach(function (it) { shelf.appendChild(poster(it, "")); });
+  }
+
+  // Подэкраны стопкой: «‹ Студия» и системная BackButton снимают верхний; последний ведёт
+  // на главный экран, на прежнюю прокрутку. Из «Отдельных выпусков» назад - во «Все спринты».
+  var app = document.querySelector(".app"), sub = document.getElementById("v2Sub"), mainTop = 0, stack = [];
+  var backLabel = sub.querySelector("[data-v2-back-label]");
+  var PAGE_NAMES = { sprints: "Все спринты" };
+  function showPage(name) {
+    sub.querySelectorAll("[data-v2-page]").forEach(function (p) { p.hidden = p.getAttribute("data-v2-page") !== name; });
+    backLabel.textContent = stack.length > 1 ? (PAGE_NAMES[stack[stack.length - 2]] || "Назад") : "Студия";
+    app.scrollTop = 0;
+  }
   function closeSub() {
+    stack.pop();
+    if (stack.length) { showPage(stack[stack.length - 1]); return; }
     document.body.classList.remove("v2-sub-open");
     try { tg.BackButton.hide(); } catch (e) {}
     app.scrollTop = mainTop;
   }
   function openSub(name) {
-    mainTop = app.scrollTop;
-    sub.querySelectorAll("[data-v2-page]").forEach(function (p) { p.hidden = p.getAttribute("data-v2-page") !== name; });
+    if (!stack.length) mainTop = app.scrollTop;
+    stack.push(name);
     document.body.classList.add("v2-sub-open");
-    app.scrollTop = 0;
+    showPage(name);
     try { tg.BackButton.show(); } catch (e) {}
   }
   try { tg.BackButton.onClick(closeSub); } catch (e) {}
