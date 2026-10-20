@@ -96,7 +96,8 @@ function irenaReturnUrl() {
     }
     // ФАЙЛ КЛУБА (20.10.2026): ссылка из закреплённого поста startapp=file-<slug> -> экран file/
     // в том же окне, он сам проверяет участницу через get-file. Та же отдельная ветка, что у ref.
-    var fm = name && /^file-([a-z0-9][a-z0-9-]{2,60})$/.exec(name);
+    // slug 3..59: startapp у Телеграма до 64, та же граница в get-file и в file/.
+    var fm = name && /^file-([a-z0-9][a-z0-9-]{2,58})$/.exec(name);
     if (fm) {
       try {
         if (sessionStorage.getItem("studio_start_route_done") !== name) {

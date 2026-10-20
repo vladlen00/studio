@@ -52,21 +52,25 @@ h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:30px;li
     <div class="screen" style="padding:0">
       <div class="kind" id="f-kind">PDF</div>
       <h1 id="f-title"></h1>
-      <p class="lead" id="f-lead">Файл откроется в браузере, оттуда его можно сохранить.</p>
+      <p class="lead" id="f-lead"></p>
       <div class="btns">
         <button type="button" class="btn" id="b-save" data-act="save" hidden>Сохранить на телефон</button>
         <button type="button" class="btn" id="b-open" data-act="open">Открыть файл</button>
       </div>
       <div class="status" id="f-status"></div>
-      <div class="note" id="f-howto"><b>Как сохранить на iPhone:</b> открой файл, внизу нажми квадрат со стрелкой вверх и выбери «Сохранить в Файлы». На Android файл обычно скачивается сразу.</div>
+      <div class="note" id="f-howto"></div>
     </div>
   </div>
 
   <div id="s-message" class="center" hidden>
     <h1 id="m-title"></h1>
     <p class="lead" id="m-text"></p>
-    <button type="button" class="btn" id="m-btn" data-act="retry" hidden>Попробовать ещё раз</button>
-    <button type="button" class="btn ghost" data-act="studio">Открыть студию</button>
+    <div class="btns" style="width:100%">
+      <button type="button" class="btn" id="m-pay-card" data-act="pay-card" hidden>Вступить в клуб: оплата картой</button>
+      <button type="button" class="btn ghost" id="m-pay-rub" data-act="pay-rub" hidden>Оплатить в рублях или по СБП</button>
+      <button type="button" class="btn" id="m-btn" data-act="retry" hidden>Попробовать ещё раз</button>
+      <button type="button" class="btn ghost" id="m-studio" data-act="studio">Открыть студию</button>
+    </div>
   </div>
 </div>
 <script>
@@ -76,6 +80,9 @@ h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:30px;li
   // Попытки 2-3 через прокси biohack (Vercel /sb -> supabase), как referral-api в ref/.
   var API_PROXY = "https://biohack-tracker-blond.vercel.app/sb/functions/v1/get-file";
   var RETRY_MS = [1000, 2000];
+  // Вступить в клуб: те же две оплаты, что на экране «Доступ закрыт» студии (IRENA_PAY_CARD_URL / IRENA_PAY_RUB_URL).
+  var PAY_CARD_URL = "https://t.me/Biochakirena_bot?start=kxd5Hoy4rFKSkrJm";
+  var PAY_RUB_URL = "https://t.me/tribute/app?startapp=sPKO";
   var FRESH_MS = 10 * 60 * 1000;   // ссылка живёт 15 минут, берём новую раньше
   var tg = window.Telegram && window.Telegram.WebApp;
   var slug = new URLSearchParams(location.search).get("name") || "";
@@ -84,7 +91,17 @@ h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:30px;li
 
   function $(id) { return document.getElementById(id); }
   function show(id) { ["loading", "file", "message"].forEach(function (s) { $("s-" + s).hidden = s !== id; }); window.scrollTo(0, 0); }
-  function message(title, text, retry) { $("m-title").textContent = title; $("m-text").textContent = text; $("m-btn").hidden = !retry; show("message"); }
+  // kind: "retry" - кнопка повтора, "join" - две оплаты вместо тупика, иначе только «Открыть студию».
+  function message(title, text, kind) {
+    $("m-title").textContent = title; $("m-text").textContent = text;
+    $("m-btn").hidden = kind !== "retry";
+    $("m-pay-card").hidden = $("m-pay-rub").hidden = kind !== "join";
+    $("m-studio").hidden = kind === "join";
+    show("message");
+  }
+  function openTg(url) {
+    try { tg.openTelegramLink(url); } catch (e) { location.href = url; }
+  }
   function ver(v) { try { return !!(tg && tg.isVersionAtLeast && tg.isVersionAtLeast(v)); } catch (e) { return false; } }
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
@@ -134,7 +151,7 @@ h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:30px;li
     var b = $("b-open"); b.disabled = true; $("f-status").textContent = "";
     var url = await link("inline");
     b.disabled = false;
-    if (!url) { $("f-status").textContent = "Не получилось. Проверь интернет и попробуй ещё раз."; return; }
+    if (!url) { $("f-status").textContent = "Не получилось открыть файл. Проверь интернет и попробуй ещё раз."; return; }
     openUrl(url);
   }
   // Внешний браузер, а не окно Телеграма: в канале с защитой контента сохранить нельзя, а в
@@ -151,6 +168,8 @@ h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:30px;li
     else if (a === "save") onSave();
     else if (a === "open") onOpen();
     else if (a === "retry") { show("loading"); start(); }
+    else if (a === "pay-card") openTg(PAY_CARD_URL);
+    else if (a === "pay-rub") openTg(PAY_RUB_URL);
   });
 
   async function start() {
@@ -159,12 +178,13 @@ h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:30px;li
       try { tg.setHeaderColor("#FBF6F2"); tg.setBackgroundColor("#FBF6F2"); } catch (e) {}
       try { tg.BackButton.onClick(toStudio); tg.BackButton.show(); } catch (e) {}
     }
-    if (!(tg && tg.initData)) { message("Открой ссылку в Телеграме", "Файлы клуба открываются из канала в Телеграме.", false); return; }
-    if (!/^[a-z0-9][a-z0-9-]{2,60}$/.test(slug)) { message("Файл не найден", "Похоже, ссылка неполная. Открой её из закреплённого поста ещё раз.", false); return; }
+    if (!(tg && tg.initData)) { message("Открой ссылку в Телеграме", "Файлы клуба открываются из канала в Телеграме.", ""); return; }
+    // Граница slug та же, что в get-file (_shared/club-files.ts) и в ветке file- в studio/index.html: 3..59.
+    if (!/^[a-z0-9][a-z0-9-]{2,58}$/.test(slug)) { message("Файл не найден", "Похоже, ссылка неполная. Открой её из закреплённого поста ещё раз.", ""); return; }
     var r = await call("inline");
     if (r.status === 200 && r.data.ok) {
       var f = r.data.files && r.data.files[slug];
-      if (!f) { message("Файл не найден", "Похоже, ссылка устарела. Открой её из закреплённого поста ещё раз.", false); return; }
+      if (!f) { message("Файл не найден", "Похоже, ссылка устарела. Открой её из закреплённого поста ещё раз.", ""); return; }
       FILE = f; links.inline = { url: f.url, at: Date.now() };
       var png = f.content_type === "image/png" || f.content_type === "image/jpeg";
       $("f-kind").textContent = png ? "Картинка" : "PDF";
@@ -173,12 +193,18 @@ h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:30px;li
       var canDl = ver("8.0") && typeof tg.downloadFile === "function";
       $("b-save").hidden = !canDl;
       $("b-open").className = canDl ? "btn ghost" : "btn";
+      $("f-lead").textContent = canDl
+        ? "Нажми «Сохранить на телефон», и файл появится в «Файлах». Или открой его в браузере и сохрани оттуда."
+        : "Файл откроется в браузере, оттуда его можно сохранить.";
+      $("f-howto").innerHTML = canDl
+        ? "<b>Как сохранить на iPhone:</b> нажми «Сохранить на телефон». Если открыла файл в браузере, внизу нажми квадрат со стрелкой вверх и выбери «Сохранить в Файлы». На Android файл обычно скачивается сразу."
+        : "<b>Как сохранить на iPhone:</b> открой файл, внизу нажми квадрат со стрелкой вверх и выбери «Сохранить в Файлы». На Android файл обычно скачивается сразу.";
       show("file");
       return;
     }
-    if (r.status === 403) { message("Файл для участниц клуба", "Он открывается тем, кто сейчас в клубном канале.", false); return; }
-    if (r.status === 401) { message("Не получилось проверить вход", "Закрой это окно и открой ссылку из поста ещё раз.", false); return; }
-    message("Не получилось загрузить", "Проверь интернет и попробуй ещё раз.", true);
+    if (r.status === 403) { message("Этот файл для участниц клуба 💜", "Вступай в клуб «Женский Биохакинг»: откроются все шпаргалки, практики и программы, а эта ссылка заработает сразу после вступления.", "join"); return; }
+    if (r.status === 401) { message("Не получилось проверить вход", "Закрой это окно и открой ссылку из поста ещё раз.", ""); return; }
+    message("Не получилось загрузить", "Проверь интернет и попробуй ещё раз.", "retry");
   }
   start();
 })();
