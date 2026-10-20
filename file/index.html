@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Файл клуба</title>
+<script src="../telegram-web-app.js"></script>
+<style>
+/* Файл клуба (20.10.2026). Вход: t.me/relax2000_bot/studio?startapp=file-<slug> из закреплённого
+   поста канала. Студия переводит сюда (?name=<slug>), здесь get-file проверяет участницу канала
+   по initData и отдаёт ссылку на файл в закрытом хранилище. Палитра и шрифты как у ref/. */
+@font-face{font-family:Onest;font-style:normal;font-weight:400 700;font-display:swap;src:url(../ref/fonts/onest-normal-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Onest;font-style:normal;font-weight:400 700;font-display:swap;src:url(../ref/fonts/onest-normal-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Playfair;font-style:normal;font-weight:600;font-display:swap;src:url(../ref/fonts/playfair-normal-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Playfair;font-style:normal;font-weight:600;font-display:swap;src:url(../ref/fonts/playfair-normal-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{--bg:#FBF6F2;--text:#2B1D26;--body:#4A3742;--muted:#6E5A64;--accent:#9C4F6B;--soft:#F3E6EA;--line:#EAD9DF;--card:#FFFFFF}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Onest,system-ui,-apple-system,sans-serif;-webkit-text-size-adjust:100%}
+body{min-height:100vh}
+button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.screen{max-width:480px;margin:0 auto;padding:20px 20px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:20px}
+.screen[hidden]{display:none}
+.top{display:flex;align-items:center;height:44px;margin-left:-10px}
+.back{height:44px;min-width:44px;border:0;background:none;color:var(--text);display:flex;align-items:center;gap:8px;padding:0 14px 0 0;border-radius:22px;font:inherit;font-size:15px;font-weight:500}
+.back:active{background:var(--soft)}
+.back-i{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.kind{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font-family:Playfair,Georgia,serif;font-weight:600;font-size:30px;line-height:1.15}
+.lead{margin:0;font-size:17px;line-height:1.45;color:var(--body)}
+.btns{display:flex;flex-direction:column;gap:10px}
+.btn{height:54px;border:0;border-radius:14px;background:var(--accent);color:#fff;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.btn.ghost{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
+.btn:active{opacity:.85}
+.btn[disabled]{opacity:.55}
+[hidden]{display:none !important}   /* .btn{display:flex} иначе перебивает атрибут hidden */
+.note{background:var(--soft);border-radius:16px;padding:16px;font-size:14px;line-height:1.5;color:var(--body)}
+.note b{color:var(--text)}
+.center{display:flex;flex-direction:column;gap:14px;align-items:flex-start;padding-top:24px}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:s 0.9s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.status{font-size:14px;color:var(--muted);min-height:20px}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="top"><button type="button" class="back" data-act="studio"><span class="back-i"><svg width="11" height="19" viewBox="0 0 11 19" fill="none"><path d="M9.5 1.5 2 9.5l7.5 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Студия</button></div>
+
+  <div id="s-loading" class="center"><div class="spin"></div><div class="lead">Готовим файл…</div></div>
+
+  <div id="s-file" hidden>
+    <div class="screen" style="padding:0">
+      <div class="kind" id="f-kind">PDF</div>
+      <h1 id="f-title"></h1>
+      <p class="lead" id="f-lead">Файл откроется в браузере, оттуда его можно сохранить.</p>
+      <div class="btns">
+        <button type="button" class="btn" id="b-save" data-act="save" hidden>Сохранить на телефон</button>
+        <button type="button" class="btn" id="b-open" data-act="open">Открыть файл</button>
+      </div>
+      <div class="status" id="f-status"></div>
+      <div class="note" id="f-howto"><b>Как сохранить на iPhone:</b> открой файл, внизу нажми квадрат со стрелкой вверх и выбери «Сохранить в Файлы». На Android файл обычно скачивается сразу.</div>
+    </div>
+  </div>
+
+  <div id="s-message" class="center" hidden>
+    <h1 id="m-title"></h1>
+    <p class="lead" id="m-text"></p>
+    <button type="button" class="btn" id="m-btn" data-act="retry" hidden>Попробовать ещё раз</button>
+    <button type="button" class="btn ghost" data-act="studio">Открыть студию</button>
+  </div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var API = "https://kjzxrpwqyyjcykwbqskn.supabase.co/functions/v1/get-file";
+  // Попытки 2-3 через прокси biohack (Vercel /sb -> supabase), как referral-api в ref/.
+  var API_PROXY = "https://biohack-tracker-blond.vercel.app/sb/functions/v1/get-file";
+  var RETRY_MS = [1000, 2000];
+  var FRESH_MS = 10 * 60 * 1000;   // ссылка живёт 15 минут, берём новую раньше
+  var tg = window.Telegram && window.Telegram.WebApp;
+  var slug = new URLSearchParams(location.search).get("name") || "";
+  var FILE = null;                 // { title, file_name, content_type }
+  var links = {};                  // mode -> { url, at }
+
+  function $(id) { return document.getElementById(id); }
+  function show(id) { ["loading", "file", "message"].forEach(function (s) { $("s-" + s).hidden = s !== id; }); window.scrollTo(0, 0); }
+  function message(title, text, retry) { $("m-title").textContent = title; $("m-text").textContent = text; $("m-btn").hidden = !retry; show("message"); }
+  function ver(v) { try { return !!(tg && tg.isVersionAtLeast && tg.isVersionAtLeast(v)); } catch (e) { return false; } }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function toStudio() {
+    var url = "../"; try { url = sessionStorage.getItem("studio_return_url") || "../"; } catch (e) {}
+    if (tg && tg.BackButton) { try { tg.BackButton.offClick(toStudio); tg.BackButton.hide(); } catch (e) {} }
+    location.replace(url);
+  }
+
+  // Ответ: { status, data }. 5xx и обрыв повторяем, 4xx - вердикт.
+  async function call(mode) {
+    var body = JSON.stringify({ initData: tg.initData, slug: slug, mode: mode });
+    var last = { status: 0, data: {} };
+    for (var i = 0; i < 3; i++) {
+      try {
+        var res = await fetch(i === 0 ? API : API_PROXY, { method: "POST", headers: { "Content-Type": "application/json" }, body: body });
+        var data = await res.json().catch(function () { return {}; });
+        last = { status: res.status, data: data };
+        if (res.status < 500) return last;
+      } catch (e) { last = { status: 0, data: {} }; }
+      if (i < 2) await sleep(RETRY_MS[i]);
+    }
+    return last;
+  }
+  async function link(mode) {
+    var l = links[mode];
+    if (l && Date.now() - l.at < FRESH_MS) return l.url;
+    var r = await call(mode);
+    var f = r.status === 200 && r.data.ok && r.data.files && r.data.files[slug];
+    if (!f) return null;
+    links[mode] = { url: f.url, at: Date.now() };
+    return f.url;
+  }
+
+  async function onSave() {
+    var b = $("b-save"); b.disabled = true; $("f-status").textContent = "";
+    var url = await link("attachment");
+    b.disabled = false;
+    if (!url) { $("f-status").textContent = "Не получилось. Попробуй ещё раз или нажми «Открыть файл»."; return; }
+    try {
+      tg.downloadFile({ url: url, file_name: FILE.file_name }, function (accepted) {
+        $("f-status").textContent = accepted ? "Файл скачивается. Он появится в «Загрузках» Телеграма и в «Файлах» телефона." : "";
+      });
+    } catch (e) { openUrl(url); }
+  }
+  async function onOpen() {
+    var b = $("b-open"); b.disabled = true; $("f-status").textContent = "";
+    var url = await link("inline");
+    b.disabled = false;
+    if (!url) { $("f-status").textContent = "Не получилось. Проверь интернет и попробуй ещё раз."; return; }
+    openUrl(url);
+  }
+  // Внешний браузер, а не окно Телеграма: в канале с защитой контента сохранить нельзя, а в
+  // браузере можно (ради этого ссылки и делались). target=_blank в Телеграме мёртв, только openLink.
+  function openUrl(url) {
+    if (tg && tg.openLink) { try { tg.openLink(url, { try_instant_view: false }); return; } catch (e) {} }
+    location.href = url;
+  }
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b) return;
+    var a = b.getAttribute("data-act");
+    if (a === "studio") toStudio();
+    else if (a === "save") onSave();
+    else if (a === "open") onOpen();
+    else if (a === "retry") { show("loading"); start(); }
+  });
+
+  async function start() {
+    if (tg) {
+      try { tg.ready(); tg.expand(); } catch (e) {}
+      try { tg.setHeaderColor("#FBF6F2"); tg.setBackgroundColor("#FBF6F2"); } catch (e) {}
+      try { tg.BackButton.onClick(toStudio); tg.BackButton.show(); } catch (e) {}
+    }
+    if (!(tg && tg.initData)) { message("Открой ссылку в Телеграме", "Файлы клуба открываются из канала в Телеграме.", false); return; }
+    if (!/^[a-z0-9][a-z0-9-]{2,60}$/.test(slug)) { message("Файл не найден", "Похоже, ссылка неполная. Открой её из закреплённого поста ещё раз.", false); return; }
+    var r = await call("inline");
+    if (r.status === 200 && r.data.ok) {
+      var f = r.data.files && r.data.files[slug];
+      if (!f) { message("Файл не найден", "Похоже, ссылка устарела. Открой её из закреплённого поста ещё раз.", false); return; }
+      FILE = f; links.inline = { url: f.url, at: Date.now() };
+      var png = f.content_type === "image/png" || f.content_type === "image/jpeg";
+      $("f-kind").textContent = png ? "Картинка" : "PDF";
+      $("f-title").textContent = f.title;
+      // Кнопка «Сохранить» только там, где Телеграм умеет скачивать сам (Bot API 8.0+).
+      var canDl = ver("8.0") && typeof tg.downloadFile === "function";
+      $("b-save").hidden = !canDl;
+      $("b-open").className = canDl ? "btn ghost" : "btn";
+      show("file");
+      return;
+    }
+    if (r.status === 403) { message("Файл для участниц клуба", "Он открывается тем, кто сейчас в клубном канале.", false); return; }
+    if (r.status === 401) { message("Не получилось проверить вход", "Закрой это окно и открой ссылку из поста ещё раз.", false); return; }
+    message("Не получилось загрузить", "Проверь интернет и попробуй ещё раз.", true);
+  }
+  start();
+})();
+</script>
+</body>
+</html>
