@@ -74,7 +74,7 @@ function irenaReturnUrl() {
   window.studioOpenRefHome = function () {
     try {
       sessionStorage.setItem("studio_return_url", location.pathname + location.search);
-      location.href = new URL("ref/", location.href).pathname + "?v=10&home=1" + location.hash;
+      location.href = new URL("ref/", location.href).pathname + "?v=11&home=1" + location.hash;
       return true;
     } catch (e) { return false; }
   };
@@ -89,7 +89,7 @@ function irenaReturnUrl() {
         if (sessionStorage.getItem("studio_start_route_done") !== name) {
           sessionStorage.setItem("studio_start_route_done", name);   // «Открыть студию» из ref/ не уведёт обратно
           sessionStorage.setItem("studio_return_url", location.pathname + location.search);
-          location.href = new URL("ref/", location.href).pathname + "?v=10" + location.hash;
+          location.href = new URL("ref/", location.href).pathname + "?v=11" + location.hash;
           return;
         }
       } catch (e) { /* обычный путь */ }
