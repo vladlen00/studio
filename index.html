@@ -108,6 +108,19 @@ function irenaReturnUrl() {
         }
       } catch (e) { /* обычный путь */ }
     }
+    // ПОДРУЖКА В ОКНЕ СТУДИИ (проба 27.10.2026): startapp=podruzhka -> трекер на vercel.app в том же
+    // окне, с хешем запуска (initData). Чужой origin, поэтому адрес возврата едет в ret, а не через
+    // sessionStorage. Плитки студии пока ведут по-старому (tracker?startapp=ai).
+    if (name === "podruzhka") {
+      try {
+        if (sessionStorage.getItem("studio_start_route_done") !== name) {
+          sessionStorage.setItem("studio_start_route_done", name);   // «назад» из Подружки не уведёт обратно
+          location.href = "https://biohack-tracker-blond.vercel.app/?tab=ai&from=studio&ret=" +
+            encodeURIComponent(location.pathname + location.search) + location.hash;
+          return;
+        }
+      } catch (e) { /* обычный путь */ }
+    }
     if (!name || !Object.prototype.hasOwnProperty.call(START_ROUTES, name)) return;
     var DONE_KEY = "studio_start_route_done";
     if (sessionStorage.getItem(DONE_KEY) === name) return;
