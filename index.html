@@ -1060,6 +1060,30 @@ body.tg-v2 .v2-t-dolg   { --smoke-a: rgba(96,180,250,.46);  --smoke-b: rgba(240,
 body.tg-v2 .v2-t-book   { --smoke-a: rgba(110,140,250,.44); --smoke-b: rgba(236,96,170,.44); }
 body.tg-v2 .v2-t-sprint { --smoke-a: rgba(92,142,244,.50);  --smoke-b: rgba(138,82,236,.54); }
 
+/* --- «Как пользоваться» (29.10.2026): первая строка .v2-stack, видео Ирены в канале (пост 645) --- */
+body.tg-v2 .v2-howto {
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  padding: 13px 18px 13px 13px; border-radius: 20px; border: 1px solid rgba(190,140,255,.34);
+  text-align: left; cursor: pointer; font-family: inherit; color: #F7F1F2;
+  position: relative; overflow: hidden; isolation: isolate; background: #130F17;
+  -webkit-mask-image: radial-gradient(#fff, #000);
+  -webkit-tap-highlight-color: transparent;
+}
+body.tg-v2 .v2-howto::before {
+  content: ""; position: absolute; inset: -40%; z-index: 0; pointer-events: none;
+  background: radial-gradient(31% 78% at 78% 22%, rgba(176,112,240,.24) 0%, transparent 70%),
+              radial-gradient(25% 67% at 22% 78%, rgba(240,120,160,.18) 0%, transparent 70%);
+  filter: blur(20px);
+}
+body.tg-v2 .v2-howto > * { position: relative; z-index: 1; }
+body.tg-v2 .v2-howto:active { filter: brightness(1.15); }
+body.tg-v2 .v2-howto-icon { width: 42px; height: 42px; flex: 0 0 auto; border-radius: 13px; display: flex; align-items: center; justify-content: center;
+  background: rgba(176,112,240,.14); border: 1px solid rgba(190,140,255,.34); }
+body.tg-v2 .v2-howto-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+body.tg-v2 .v2-howto-text b { font-size: 15px; font-weight: 600; color: #F7F1F2; }
+body.tg-v2 .v2-howto-text span { font-size: 12.5px; color: #CBBCC3; }
+body.tg-v2 .v2-howto-arrow { display: flex; }
+
 /* --- «Приведи подругу»: тот же #refTile, перенесённый скриптом в .v2-stack --- */
 body.tg-v2 .ref-banner {
   margin-top: 0; gap: 14px; padding: 13px 18px 13px 13px; border-radius: 20px;
@@ -1288,6 +1312,12 @@ var STUDIO_V2 = { all: true, ids: [184766639, 514894075] };
       <img src="img/studio-banner.webp" alt="" width="1170" height="430" loading="lazy">
     </div>
     <div class="v2-stack" id="v2Stack">
+      <!-- «Как пользоваться» (29.10.2026): видео Ирены, пост 645 канала, открывается в телеграме. -->
+      <button type="button" class="v2-howto" onclick="openHowTo()">
+        <span class="v2-howto-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><defs><linearGradient id="v2gHow" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#D9B8FF"/><stop offset="1" stop-color="#F08AB4"/></linearGradient></defs><circle cx="12" cy="12" r="9" stroke="url(#v2gHow)" stroke-width="1.8"/><path d="M10 8.6v6.8l5.4-3.4L10 8.6z" fill="url(#v2gHow)"/></svg></span>
+        <span class="v2-howto-text"><b>Как пользоваться</b><span>видео Ирены: что где лежит</span></span>
+        <span class="v2-howto-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9C93AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
+      </button>
       <button type="button" class="v2-ai" onclick="openApp('https://t.me/relax2000_bot/tracker?startapp=ai')">
         <img src="icons/podruzhka-card.png" alt="" width="58" height="58" loading="lazy">
         <span class="v2-ai-text"><b>ИИ-подружка</b><span>спроси про добавки, цикл, самочувствие</span></span>
@@ -2100,6 +2130,11 @@ function openRouteTile(name) {
   if (irenaIsWeb()) { openApp('https://t.me/relax2000_bot/' + name); return; }
   if (window.studioOpenRoute && window.studioOpenRoute(name)) return;
   try { window.Telegram.WebApp.showAlert('Не получилось открыть, попробуй ещё раз'); } catch (e) {}
+}
+// «Как пользоваться» (29.10.2026): видео-обзор клуба, пост 645. Кнопка есть только в tg-v2 (телеграм).
+function openHowTo() {
+  var u = "https://t.me/c/3838914998/645";
+  try { window.Telegram.WebApp.openTelegramLink(u); } catch (e) { location.href = u; }
 }
 function openRefHome() {
   if (window.studioOpenRefHome && window.studioOpenRefHome()) return;
